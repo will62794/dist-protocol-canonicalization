@@ -189,9 +189,7 @@ UpdateTerm(dest) ==
            \* messages is unchanged so m can be processed further.
         /\ UNCHANGED <<msgs, candidateVars, leaderVars, logVars, msgs>>
 
-\* ACTION: HandleRequestVoteRequest ------------------------------
-\* Server i receives a RequestVote request from server j with
-\* m.mterm <= currentTerm[i].
+\* Server i grants its vote to a candidate server.
 GrantVote(i, m) ==
     \* /\ m.mtype = RequestVoteRequest
     /\ m.currentTerm <= currentTerm[i]
@@ -207,15 +205,9 @@ GrantVote(i, m) ==
             /\ msgs' = {UniversalMsg(i)}
             /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, logVars>>
 
-\* ACTION: HandleRequestVoteResponse --------------------------------
-\* Server i receives a RequestVote response from server j with
-\* m.mterm = currentTerm[i].
+\* Server i records a vote that was granted for it in its current term.
 RecordGrantedVote(i, m) ==
-    \* This tallies votes even when the current state is not Candidate, but
-    \* they won't be looked at, so it doesn't matter.
-    \* /\ m.mtype = RequestVoteResponse
     /\ m.currentTerm = currentTerm[i]
-    \* /\ ReceivableRequestVoteMessage(m, RequestVoteResponse, EqualTerm)
     /\ votesGranted' = [votesGranted EXCEPT ![i] = 
                             \* The sender must have voted for us in this term.
                             votesGranted[i] \cup 
@@ -223,55 +215,25 @@ RecordGrantedVote(i, m) ==
     /\ msgs' = msgs \ {m} \* discard the message.
     /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars>>
 
-\* ACTION: RejectAppendEntriesRequest -------------------
-\* Either the term of the message is stale or the message
-\* entry is too high (beyond the last log entry + 1)
-LogOk(i, m) ==
-    \/ m.mprevLogIndex = 0
-    \/ /\ m.mprevLogIndex > 0
-       /\ m.mprevLogIndex <= Len(log[i])
-       /\ m.mprevLogTerm = log[i][m.mprevLogIndex]
-
-\* ACTION: AcceptAppendEntriesRequest ------------------
-\* The original spec had to three sub actions, this version is compressed.
-\* In one step it can:
-\* - truncate the log
-\* - append an entry to the log
-\* - respond to the leader         
-CanAppend(m, i) ==
-    /\ m.mentries /= << >>
-    /\ Len(log[i]) = m.mprevLogIndex
-    
-\* truncate in two cases:
-\* - the last log entry index is >= than the entry being received
-\* - this is an empty RPC and the last log entry index is > than the previous log entry received
-NeedsTruncation(m, i, index) ==
-   \/ /\ m.mentries /= <<>>
-      /\ Len(log[i]) >= index
-   \/ /\ m.mentries = <<>>
-      /\ Len(log[i]) > m.mprevLogIndex
-
-TruncateLog(m, i) ==
-    [index \in 1..m.mprevLogIndex |-> log[i][index]]
-
 \* Is log li a prefix of log lj.
 IsPrefix(li,lj) == 
     /\ Len(li) <= Len(lj)
     /\ SubSeq(li, 1, Len(li)) = SubSeq(lj, 1, Len(li))
 
+\* Server i appends a new log entry from some other server.
 AppendEntry(i, m) ==
     /\ m.currentTerm = currentTerm[i]
-    /\ state[i] \in { Follower, Candidate }
+    /\ state[i] \in { Follower, Candidate } \* is this precondition necessary?
     \* Can always append an entry if we are a prefix of the other log, and will only
     \* append if other log actually has more entries than us.
     /\ IsPrefix(log[i], m.log)
     /\ Len(m.log) > Len(log[i])
-    /\ state' = [state EXCEPT ![i] = Follower]
-    \* Only update the logs in this action. Commit learning is done in a separate action.
+    \* Only update logs in this action. Commit learning is done separately.
     /\ log' = [log EXCEPT ![i] = Append(log[i], m.log[Len(log[i]) + 1])]
     /\ msgs' = msgs \cup {UniversalMsg(i)}
-    /\ UNCHANGED <<candidateVars, commitIndex, leaderVars, votedFor, currentTerm>>
+    /\ UNCHANGED <<candidateVars, commitIndex, leaderVars, votedFor, currentTerm, state >>
        
+\* Server i truncates its log based on detection of some other divergent log in a newer term.
 TruncateEntry(i, m) ==
     \* /\ m.currentTerm = currentTerm[m.mdest]
     /\ state[i] \in { Follower, Candidate }
@@ -287,22 +249,25 @@ TruncateEntry(i, m) ==
     \* There is no need to broadcast your state on this action.
     /\ UNCHANGED <<candidateVars, msgs, leaderVars, commitIndex, votedFor, currentTerm>>
 
-\* TODO: I expect this to be incorrect in its current form.
+\* 
+\* Server i learns of a new commitIndex from some other server.
+\* 
+\* The requirement is that the server it learned from is on the same branch of
+\* history, which is checked \* via the log prefix check.
+\* 
 LearnCommit(i, m) ==
     /\ m.currentTerm = currentTerm[i]
     /\ state[i] \in { Follower, Candidate }
-    \* We can learn a commitIndex as long as the log check passes, and if we could append these log entries.
-    \* We will not, however, advance our local commitIndex to a point beyond the end of our log. 
+    \* We can learn a commitIndex as long as our log is on the same history branch as the log of
+    \* the node we are learning commitIndex from.
     /\ IsPrefix(log[i], m.log)
     /\ m.commitIndex > commitIndex[i] \* no need to ever decrement our commitIndex.
+    \* Update commit index, without advancing to a point beyond the end of our log. 
     /\ commitIndex' = [commitIndex EXCEPT ![i] = Min({m.commitIndex, Len(log[i])})]
     \* No need to send a response message since we are not updating our logs.
     /\ UNCHANGED <<candidateVars, msgs, leaderVars, log, votedFor, currentTerm, state, msgs>>
 
-
-\* ACTION: HandleAppendEntriesResponse
-\* Server i receives an AppendEntries response from server j with
-\* m.mterm = currentTerm[i].
+\* Server i learns that another server has applied an entry up to some point in its log.
 LeaderLearnsOfAppliedEntry(i, m) ==
     /\ state[i] = Leader
     /\ m.currentTerm = currentTerm[i]
@@ -338,8 +303,6 @@ Next ==
     \/ LeaderLearnsOfAppliedEntryAction
     \/ AdvanceCommitIndexAction
     \/ LearnCommitAction
-
-NextUnchanged == UNCHANGED vars
 
 Spec == Init /\ [][Next]_vars
 
@@ -396,6 +359,8 @@ MaxMEntriesLen == 1
 
 SeqOf(S, n) == UNION {[1..m -> S] : m \in 0..n}
 BoundedSeq(S, n) == SeqOf(S, n)
+
+NextUnchanged == UNCHANGED vars
 
 \* RequestVoteRequestType == [
 \*     mtype         : {RequestVoteRequest},
