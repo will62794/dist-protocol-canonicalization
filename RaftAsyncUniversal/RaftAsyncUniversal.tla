@@ -321,28 +321,20 @@ TruncateEntry(i, m) ==
 \* TODO: I expect this to be incorrect in its current form.
 LearnCommit(i, m) ==
     /\ m.currentTerm = currentTerm[i]
-    \* /\ LET  i     == m.mdest
-    \*         j     == m.msource
-    \*         logOk == LogOk(i, m)
-    \*     IN 
     /\ state[i] \in { Follower, Candidate }
     \* We can learn a commitIndex as long as the log check passes, and if we could append these log entries.
-    \* We will not, however, advance our local commitIndex to a point beyond the end of our log. And,
-    \* we don't actually update our log here, only our commitIndex.
-    \* /\ logOk
-    \* /\ Len(log[i]) = m.mprevLogIndex
-    \* /\ CanAppend(m, i)
+    \* We will not, however, advance our local commitIndex to a point beyond the end of our log. 
+    /\ IsPrefix(log[i], m.log)
     /\ m.commitIndex > commitIndex[i] \* no need to ever decrement our commitIndex.
-    /\ state' = [state EXCEPT ![i] = Follower]
     /\ commitIndex' = [commitIndex EXCEPT ![i] = Min({m.commitIndex, Len(log[i])})]
     \* No need to send a response message since we are not updating our logs.
-    /\ UNCHANGED <<candidateVars, msgs, leaderVars, log, votedFor, currentTerm, msgs>>
+    /\ UNCHANGED <<candidateVars, msgs, leaderVars, log, votedFor, currentTerm, state, msgs>>
 
 
 \* ACTION: HandleAppendEntriesResponse
 \* Server i receives an AppendEntries response from server j with
 \* m.mterm = currentTerm[i].
-LeaderLearnsEntry(i, m) ==
+LeaderLearnsOfAppliedEntry(i, m) ==
     /\ state[i] = Leader
     /\ m.currentTerm = currentTerm[i]
     \* Only need to update if newer.
@@ -353,16 +345,16 @@ LeaderLearnsEntry(i, m) ==
     /\ UNCHANGED <<serverVars, candidateVars, logVars, nextIndex>>
 
 UpdateTermAction == \E i \in Server : UpdateTerm(i)
-BecomeCandidateAction == TRUE /\ \E i \in Server : BecomeCandidate(i)
+BecomeCandidateAction == \E i \in Server : BecomeCandidate(i)
 GrantVoteAction == \E i \in Server : \E m \in msgs : GrantVote(i, m)
 RecordGrantedVoteAction == \E i \in Server : \E m \in msgs : RecordGrantedVote(i, m)
-BecomeLeaderAction == TRUE /\ \E i \in Server : BecomeLeader(i)
-ClientRequestAction == TRUE /\ \E i \in Server : ClientRequest(i)
-LeaderBroadcastAction == TRUE /\ \E i \in Server : LeaderBroadcast(i)
+BecomeLeaderAction == \E i \in Server : BecomeLeader(i)
+ClientRequestAction == \E i \in Server : ClientRequest(i)
+LeaderBroadcastAction == \E i \in Server : LeaderBroadcast(i)
 AppendEntryAction == \E i \in Server : \E m \in msgs : AppendEntry(i, m)
 TruncateEntryAction == \E i \in Server : \E m \in msgs : TruncateEntry(i, m)
-LeaderLearnsEntryAction == \E i \in Server : \E m \in msgs : LeaderLearnsEntry(i, m)
-AdvanceCommitIndexAction == TRUE /\ \E i \in Server : AdvanceCommitIndex(i)
+LeaderLearnsOfAppliedEntryAction == \E i \in Server : \E m \in msgs : LeaderLearnsOfAppliedEntry(i, m)
+AdvanceCommitIndexAction == \E i \in Server : AdvanceCommitIndex(i)
 LearnCommitAction == \E i \in Server : \E m \in msgs : LearnCommit(i, m)
 
 \* Defines how the variables may transition.
@@ -376,7 +368,7 @@ Next ==
     \/ LeaderBroadcastAction
     \/ AppendEntryAction
     \/ TruncateEntryAction
-    \/ LeaderLearnsEntryAction
+    \/ LeaderLearnsOfAppliedEntryAction
     \/ AdvanceCommitIndexAction
     \/ LearnCommitAction
 
@@ -959,6 +951,6 @@ TestInv ==
     \* ~\E m \in msgs : (m.mtype = RequestVoteResponse /\ m.mvoteGranted)
     \* ~\E s \in Server : Cardinality(votesGranted[s]) > 1
     \* /\ ~\E s,t \in Server : s # t /\ log[s] # <<>> /\ log[t] # <<>>
-    [][~AppendEntryAction]_vars
+    [][~LearnCommitAction]_vars
     \* ~\E s \in Server : state[s] = Leader
 ===============================================================================
