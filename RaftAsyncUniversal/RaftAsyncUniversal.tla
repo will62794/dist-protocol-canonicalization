@@ -60,7 +60,6 @@ CONSTANTS EqualTerm, LessOrEqualTerm
 VARIABLE msgs
 
 ----
-\* Auxilliary variables (used for state-space control, invariants etc)
 
 \* The server's term number.
 VARIABLE currentTerm
