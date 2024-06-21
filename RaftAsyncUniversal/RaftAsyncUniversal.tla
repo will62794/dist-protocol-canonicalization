@@ -205,8 +205,7 @@ RecordGrantedVote(i, m) ==
                             \* The sender must have voted for us in this term.
                             votesGranted[i] \cup 
                                 IF (i = m.votedFor) THEN {m.from} ELSE {}]
-    /\ msgs' = msgs \ {m} \* discard the message.
-    /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars>>
+    /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars, msgs>>
 
 \* Is log li a prefix of log lj.
 IsPrefix(li,lj) == 
@@ -268,8 +267,7 @@ LeaderLearnsOfAppliedEntry(i, m) ==
     /\ Len(m.log) > matchIndex[i][m.from]
     \* Update matchIndex to highest index of their log.
     /\ matchIndex' = [matchIndex EXCEPT ![i][m.from] = Len(m.log)]
-    /\ msgs' = msgs \ {m}
-    /\ UNCHANGED <<serverVars, candidateVars, logVars, nextIndex>>
+    /\ UNCHANGED <<serverVars, candidateVars, logVars, nextIndex, msgs>>
 
 UpdateTermAction == \E i \in Server : UpdateTerm(i)
 BecomeCandidateAction == \E i \in Server : BecomeCandidate(i)
