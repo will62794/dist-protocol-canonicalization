@@ -25,15 +25,13 @@ CONSTANTS RequestVoteRequest,
           AppendEntriesRequest, 
           AppendEntriesResponse
 
-\* Used for filtering messages under different circumstance
-\* CONSTANTS EqualTerm, LessOrEqualTerm
 
-----
-\* Global variables.
-
+\* Global set of all sent messages.
 VARIABLE msgs
 
-----
+\* 
+\* Server-local state variables
+\* 
 
 \* The server's term number.
 VARIABLE currentTerm
@@ -53,13 +51,9 @@ VARIABLE log
 \* The index of the latest entry in the log the state machine may apply.
 VARIABLE commitIndex
 
-
-\* The following variables are used only on candidates:
-
 \* The set of servers from which the candidate has received a vote in its
 \* currentTerm.
 VARIABLE votesGranted
-
 
 \* The following variables are used only on leaders:
 \* The next entry to send to each follower.
@@ -70,12 +64,14 @@ VARIABLE nextIndex
 VARIABLE matchIndex
 
 
+\* 
+\* All variables.
+\* 
+
 serverVars == <<currentTerm, state, votedFor>>
 logVars == <<log, commitIndex>>
 candidateVars == <<votesGranted>>
 leaderVars == <<nextIndex, matchIndex>>
-
-\* All variables.
 vars == <<msgs, msgs, currentTerm, state, votedFor, votesGranted, nextIndex, matchIndex, log, commitIndex>>
 
 \* Helpers
@@ -86,18 +82,6 @@ Quorum == {i \in SUBSET(Server) : Cardinality(i) * 2 > Cardinality(Server)}
 
 \* The term of the last entry in a log, or 0 if the log is empty.
 LastTerm(xlog) == IF Len(xlog) = 0 THEN 0 ELSE xlog[Len(xlog)]
-
-\* The message is of the type and has a matching term.
-\* Messages with a higher term are handled by the
-\* action UpdateTerm
-\* ReceivableRequestVoteMessage(m, mtype, term_match) ==
-\*     \* /\ msgs # {}
-\*     /\ m.mtype = mtype
-\*     /\ \/ /\ term_match = EqualTerm
-\*           /\ m.mterm = currentTerm[m.mdest]
-\*        \/ /\ term_match = LessOrEqualTerm
-\*           /\ m.mterm <= currentTerm[m.mdest]
-
 
 \* Return the minimum value from a set, or undefined if the set is empty.
 \* Min(s) == CHOOSE x \in s : \A y \in s : x <= y
@@ -394,7 +378,7 @@ Next ==
     \/ TruncateEntryAction
     \/ LeaderLearnsEntryAction
     \/ AdvanceCommitIndexAction
-    \* \/ LearnCommitAction
+    \/ LearnCommitAction
 
 NextUnchanged == UNCHANGED vars
 
