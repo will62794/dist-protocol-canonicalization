@@ -1,38 +1,12 @@
 --------------------------------- MODULE RaftAsyncUniversal ---------------------------------
-(* NOTES 
 
-Spec of Raft with message passing.
-
-Author: Jack Vanlightly
-This specification is based on (with heavy modification) the original Raft specification 
-by Diego Ongaro which can be found here: https://github.com/ongardie/raft.tla 
-
-This is a model checking optimized fork of original spec.
-
-- Summary of changes:
-    - updated message helpers:
-        - prevent resending the same message multiple times (unless explicity via the duplicate action)
-        - can only receive a message that hasn't been delivered yet
-    - optimized for model checking (reduction in state space)
-        - removed history variables (using simple invariants instead)
-        - decomposed "receive" into separate actions
-        - compressed multi-step append_entries_req processing into one.
-        - compressed timeout and requestvote into single action
-        - server directly votes for itself in an election (it doesn't send itself a vote request)
-    - fixed some bugs
-        - adding the same value over and over again
-        - allowing actions to remain enabled producing odd results
-    
-Notes on action enablement.
- - Send is only enabled if the mesage has not been previously sent.
-   This is leveraged to disable actions once executed, such as sending a specific 
-   AppendEntrieRequest. It won't be sent again, so no need for extra variables to track that. 
-
-Original source: https://github.com/Vanlightly/raft-tlaplus/blob/main/specifications/standard-raft/Raft.tla
-Modified further by Will Schultz for safety proof experiments, August 2023.
-
-Variant in the "universal" message passing style.
-*)
+\* 
+\* Asynchronous specification of Raft, in a "universal" message passing style.
+\* 
+\* Some original spec sources: 
+\* https://github.com/ongardie/raft.tla
+\* https://github.com/Vanlightly/raft-tlaplus/blob/main/specifications/standard-raft/Raft.tla
+\* 
 
 EXTENDS Naturals, FiniteSets, FiniteSetsExt, Sequences, Bags, TLC, Randomization
 
@@ -52,7 +26,7 @@ CONSTANTS RequestVoteRequest,
           AppendEntriesResponse
 
 \* Used for filtering messages under different circumstance
-CONSTANTS EqualTerm, LessOrEqualTerm
+\* CONSTANTS EqualTerm, LessOrEqualTerm
 
 ----
 \* Global variables.
@@ -101,15 +75,8 @@ logVars == <<log, commitIndex>>
 candidateVars == <<votesGranted>>
 leaderVars == <<nextIndex, matchIndex>>
 
-\* End of per server variables.-
-
-\* All variables; used for stuttering (asserting state hasn't changed).
+\* All variables.
 vars == <<msgs, msgs, currentTerm, state, votedFor, votesGranted, nextIndex, matchIndex, log, commitIndex>>
-
-view == <<serverVars, candidateVars, leaderVars, logVars >>
-Symmetry == Permutations(Server)
-
-
 
 \* Helpers
 
@@ -123,13 +90,13 @@ LastTerm(xlog) == IF Len(xlog) = 0 THEN 0 ELSE xlog[Len(xlog)]
 \* The message is of the type and has a matching term.
 \* Messages with a higher term are handled by the
 \* action UpdateTerm
-ReceivableRequestVoteMessage(m, mtype, term_match) ==
-    \* /\ msgs # {}
-    /\ m.mtype = mtype
-    /\ \/ /\ term_match = EqualTerm
-          /\ m.mterm = currentTerm[m.mdest]
-       \/ /\ term_match = LessOrEqualTerm
-          /\ m.mterm <= currentTerm[m.mdest]
+\* ReceivableRequestVoteMessage(m, mtype, term_match) ==
+\*     \* /\ msgs # {}
+\*     /\ m.mtype = mtype
+\*     /\ \/ /\ term_match = EqualTerm
+\*           /\ m.mterm = currentTerm[m.mdest]
+\*        \/ /\ term_match = LessOrEqualTerm
+\*           /\ m.mterm <= currentTerm[m.mdest]
 
 
 \* Return the minimum value from a set, or undefined if the set is empty.
@@ -154,7 +121,6 @@ InitLogVars == /\ log             = [i \in Server |-> << >>]
 
 Init == 
     /\ msgs = {}
-    /\ msgs = {}
     /\ currentTerm = [i \in Server |-> 0]
     /\ state       = [i \in Server |-> Follower]
     /\ votedFor    = [i \in Server |-> Nil]
@@ -164,8 +130,6 @@ Init ==
     /\ log             = [i \in Server |-> << >>]
     /\ commitIndex     = [i \in Server |-> 0]
     
-----
-\* Define state transitions
 
 \* 
 \* Universal message type sent from server s. 
@@ -437,7 +401,7 @@ NextUnchanged == UNCHANGED vars
 
 CONSTANT MaxTerm
 CONSTANT MaxLogLen
-CONSTANT MaxNumVoteMsgs
+\* CONSTANT MaxNumVoteMsgs
 
 Terms == 0..MaxTerm
 LogIndices == 1..MaxLogLen
@@ -537,34 +501,28 @@ TypeOK ==
 
 Spec == Init /\ [][Next]_vars
 
-----
+-----------------------
 
-\* INVARIANTS -------------------------
+\* 
+\* Invariants.
+\* 
 
 MinCommitIndex(s1, s2) ==
     IF commitIndex[s1] < commitIndex[s2]
         THEN commitIndex[s1]
         ELSE commitIndex[s2]
 
-\* INV: LeaderHasAllAckedValues
-\* A non-stale leader cannot be missing an acknowledged value
-\* LeaderHasAllAckedValues ==
-\*     \* for every acknowledged value
-\*     \A v \in Value :
-\*         IF acked[v] = TRUE
-\*         THEN
-\*             \* there does not exist a server that
-\*             ~\E i \in Server :
-\*                 \* is a leader
-\*                 /\ state[i] = Leader
-\*                 \* and which is the newest leader (aka not stale)
-\*                 /\ ~\E l \in Server : 
-\*                     /\ l # i
-\*                     /\ currentTerm[l] > currentTerm[i]
-\*                 \* and that is missing the value
-\*                 /\ ~\E index \in DOMAIN log[i] :
-\*                     log[i][index].value = v
-\*         ELSE TRUE
+
+\* INV: NoLogDivergence
+\* The log index is consistent across all servers (on those
+\* servers whose commitIndex is equal or higher than the index).
+H_NoLogDivergence ==
+    \A s1, s2 \in Server :
+        (s1 # s2) =>
+            \A index \in 1..MinCommitIndex(s1, s2) : 
+                /\ index \in DOMAIN log[s1]
+                /\ index \in DOMAIN log[s2]
+                /\ log[s1][index] = log[s2][index]
 
 \* INV: CommittedEntriesReachMajority
 \* There cannot be a committed entry that is not at majority quorum
@@ -582,19 +540,23 @@ CommittedEntriesReachMajority ==
                    /\ log[j][commitIndex[i]] = log[i][commitIndex[i]]
     ELSE TRUE
 
+-----------------------
+
 \* Model checking stuff.
 
 StateConstraint == 
     /\ \A s \in Server : currentTerm[s] <= MaxTerm
     /\ \A s \in Server : Len(log[s]) <= MaxLogLen
-    /\ Cardinality(msgs) <= MaxNumVoteMsgs
-    /\ Cardinality(msgs) <= MaxNumVoteMsgs
+    \* /\ Cardinality(msgs) <= MaxNumVoteMsgs
+    \* /\ Cardinality(msgs) <= MaxNumVoteMsgs
     \* + BagCardinality(messages) <= MaxNumMsgs
 
+Symmetry == Permutations(Server)
 
-\**************
-\* Helper lemmas.
-\**************
+
+\********************
+\* Various lemmas.
+\********************
 
 \* Is log entry e = <<index, term>> in the log of node 'i'.
 InLog(e, i) == \E x \in DOMAIN log[i] : x = e[1] /\ log[i][x] = e[2]
@@ -851,20 +813,6 @@ H_DivergentEntriesInmsgs ==
          /\ m.mprevLogIndex + 1 > Len(log[s])) => 
             (m.mentries # <<>> => m.mentries[1] # currentTerm[s]) 
 
-
-\* TODO: Consider how to state this.
-\* Leader logs contain all entries committed in previous terms.
-\* H_LeaderCompleteness == 
-\*     \A s \in Server : (state[s] = Leader) => 
-\*         \A c \in immediatelyCommitted : (c[2] < currentTerm[s] => InLog(<<c[1],c[2]>>, s))
-
-
-\* /\ matchIndex = (n1 :> (n1 :> 0 @@ n2 :> 1) @@ n2 :> (n1 :> 0 @@ n2 :> 1)) 
-\* /\ log = (n1 :> <<1>> @@ n2 :> << >>) 
-\* /\ state = (n1 :> Leader @@ n2 :> Follower) 
-\* /\ commitIndex = (n1 :> 0 @@ n2 :> 1) 
-\* /\ currentTerm = (n1 :> 1 @@ n2 :> 0) 
-
 \* If a leader server has a match index recorded, the remote node's log
 \* must match its own log up to this index.
 
@@ -1006,20 +954,6 @@ H_LogEntryInTermDisablesEarlierCommits ==
 \* Commit index is no greater than the log length on any node.
 H_CommitIndexBoundValid == 
     \A s \in Server : commitIndex[s] <= Len(log[s])
-
-
-\* INV: NoLogDivergence
-\* The log index is consistent across all servers (on those
-\* servers whose commitIndex is equal or higher than the index).
-H_NoLogDivergence ==
-    \A s1, s2 \in Server :
-        (s1 # s2) =>
-            \A index \in 1..MinCommitIndex(s1, s2) : 
-                /\ index \in DOMAIN log[s1]
-                /\ index \in DOMAIN log[s2]
-                /\ log[s1][index] = log[s2][index]
-
-
 
 
 \* INV: Used in debugging
