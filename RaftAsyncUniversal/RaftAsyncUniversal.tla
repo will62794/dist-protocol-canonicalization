@@ -137,8 +137,7 @@ BecomeCandidate(i) ==
     /\ msgs' = msgs \cup {UniversalMsg(i)}
     /\ UNCHANGED <<leaderVars, logVars>>
 
-\* ACTION: BecomeLeader -------------------------------------------
-\* Candidate i transitions to leader.
+\* Candidate i becomes a leader.
 BecomeLeader(i) ==
     /\ state[i] = Candidate
     /\ votesGranted[i] \in Quorum
@@ -147,8 +146,7 @@ BecomeLeader(i) ==
     /\ matchIndex' = [matchIndex EXCEPT ![i] = [j \in Server |-> 0]]
     /\ UNCHANGED <<msgs, currentTerm, votedFor, candidateVars, logVars, msgs>>
 
-\* ACTION: ClientRequest ----------------------------------
-\* Leader i receives a client request to add v to the log.
+\* Leader i appends a new entry in its log.
 ClientRequest(i) ==
     /\ state[i] = Leader
     /\ log' = [log EXCEPT ![i] = Append(log[i], currentTerm[i])]
@@ -158,11 +156,7 @@ ClientRequest(i) ==
 \* The set of servers that agree up through index.
 Agree(i, index) == {i} \cup {k \in Server : matchIndex[i][k] >= index }
 
-\* ACTION: AdvanceCommitIndex ---------------------------------
 \* Leader i advances its commitIndex.
-\* This is done as a separate step from handling AppendEntries responses,
-\* in part to minimize atomic regions, and in part so that leaders of
-\* single-server clusters are able to mark entries committed.
 AdvanceCommitIndex(i) ==
     /\ state[i] = Leader
     /\ LET \* The maximum indexes for which a quorum agrees
@@ -191,7 +185,6 @@ UpdateTerm(dest) ==
 
 \* Server i grants its vote to a candidate server.
 GrantVote(i, m) ==
-    \* /\ m.mtype = RequestVoteRequest
     /\ m.currentTerm <= currentTerm[i]
     /\ LET  j     == m.from
             logOk == \/ LastTerm(m.log) > LastTerm(log[i])
