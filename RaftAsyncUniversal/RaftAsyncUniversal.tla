@@ -262,9 +262,13 @@ LearnCommit(i, m) ==
 \* Server i learns that another server has applied an entry up to some point in its log.
 LeaderLearnsOfAppliedEntry(i, m) ==
     /\ state[i] = Leader
+    \* Entry is applied in current term.
     /\ m.currentTerm = currentTerm[i]
     \* Only need to update if newer.
     /\ Len(m.log) > matchIndex[i][m.from]
+    \* Follower must have a matching log entry.
+    /\ Len(m.log) \in DOMAIN log[i]
+    /\ m.log[Len(m.log)] = log[i][Len(m.log)]
     \* Update matchIndex to highest index of their log.
     /\ matchIndex' = [matchIndex EXCEPT ![i][m.from] = Len(m.log)]
     /\ UNCHANGED <<serverVars, candidateVars, logVars, nextIndex, msgs>>
