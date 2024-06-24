@@ -15,3 +15,20 @@ Note [this counterexample](https://github.com/will62794/dist-protocol-canonicali
 Different notions of “committed”: log entry is present on every future leader vs. “committed entry is never rolled back”. Possible to be safe if you mark an entry as committed but do roll it back in some cases, as long as, globally, that entry will be durable on every future leader?
 
 We can [allow commit index](https://github.com/will62794/dist-protocol-canonicalization/commit/e6839d4f07825814d23f0c9d3b62df1745d0c11d) to move backwards when rolling back log entries in some cases, while retaining safety? 
+
+From Slack chat:
+
+```
+Agreed. And to ensure remaining a bit grounded/targeted for the summer, do you think those are two good concrete goals to aim for as initial case studies? i.e.
+
+1. Chain replication in Raft
+2. Secondaries advance commit points
+3. LeaseGuard related optimizations (details to be clarified?)
+
+And, separate from a full paper, I'm also just thinking about tentative, concrete results that would be interesting to present at the end of the summer. If we could demonstrate even those kinds of optimizations within our model, that seems a valuable/interesting result to others, yes?
+```
+
+N.B. As a stretch goal we should also find a protocol that is non-Paxos.
+
+*Tomorrow let's plan to come up with a technical report by the end of 10 weeks. It is very reasonable to have a paper submission draft by the end of 10 weeks*.
+
