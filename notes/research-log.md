@@ -32,3 +32,4 @@ N.B. As a stretch goal we should also find a protocol that is non-Paxos.
 
 *Tomorrow let's plan to come up with a technical report by the end of 10 weeks. It is very reasonable to have a paper submission draft by the end of 10 weeks*.
 
+Is there also some notion of "maximal" progress that a node can take at each step of a protocol, based on the information currently available to it in the network and on its current state? Like, updating log and commit point and/or rolling back all in one go. This might also be split up into several different atomic actions?
