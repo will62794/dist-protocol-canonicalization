@@ -19,7 +19,9 @@ CONSTANTS Follower, Candidate, Leader
 \* A reserved value.
 CONSTANTS Nil
 
+\* 
 \* Global set of all sent messages.
+\* 
 VARIABLE msgs
 
 \* 
@@ -58,7 +60,7 @@ VARIABLE matchIndex
 
 
 \* 
-\* All variables.
+\* Variable sets.
 \* 
 
 serverVars == <<currentTerm, state, votedFor>>
@@ -76,26 +78,19 @@ Quorum == {i \in SUBSET(Server) : Cardinality(i) * 2 > Cardinality(Server)}
 \* The term of the last entry in a log, or 0 if the log is empty.
 LastTerm(xlog) == IF Len(xlog) = 0 THEN 0 ELSE xlog[Len(xlog)]
 
+\* Is log li a prefix of log lj.
+IsPrefix(li,lj) == 
+    /\ Len(li) <= Len(lj)
+    /\ SubSeq(li, 1, Len(li)) = SubSeq(lj, 1, Len(li))
+
 \* Return the minimum value from a set, or undefined if the set is empty.
 \* Min(s) == CHOOSE x \in s : \A y \in s : x <= y
 \* Return the maximum value from a set, or undefined if the set is empty.
 \* Max(s) == CHOOSE x \in s : \A y \in s : x >= y
 
-----
-\* Define initial values for all variables
+--------
 
-InitServerVars == /\ currentTerm = [i \in Server |-> 1]
-                  /\ state       = [i \in Server |-> Follower]
-                  /\ votedFor    = [i \in Server |-> Nil]
-InitCandidateVars == votesGranted   = [i \in Server |-> {}]
-\* The values nextIndex[i][i] and matchIndex[i][i] are never read, since the
-\* leader does not send itself messages. It's still easier to include these
-\* in the functions.
-InitLeaderVars == /\ nextIndex  = [i \in Server |-> [j \in Server |-> 1]]
-                  /\ matchIndex = [i \in Server |-> [j \in Server |-> 0]]
-InitLogVars == /\ log             = [i \in Server |-> << >>]
-               /\ commitIndex     = [i \in Server |-> 0]
-
+\* Initial states.
 Init == 
     /\ msgs = {}
     /\ currentTerm = [i \in Server |-> 0]
@@ -107,7 +102,6 @@ Init ==
     /\ log             = [i \in Server |-> << >>]
     /\ commitIndex     = [i \in Server |-> 0]
     
-
 \* 
 \* Universal message type sent from server s. 
 \* Includes that node's full state along with their node id.
@@ -207,11 +201,6 @@ RecordGrantedVote(i, m) ==
                                 IF (i = m.votedFor) THEN {m.from} ELSE {}]
     /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars, msgs>>
 
-\* Is log li a prefix of log lj.
-IsPrefix(li,lj) == 
-    /\ Len(li) <= Len(lj)
-    /\ SubSeq(li, 1, Len(li)) = SubSeq(lj, 1, Len(li))
-
 \* Server i appends a new log entry from some other server.
 AppendEntry(i, m) ==
     /\ m.currentTerm = currentTerm[i]
@@ -238,8 +227,11 @@ TruncateEntry(i, m) ==
     /\ LastTerm(m.log) > LastTerm(log[i])
     /\ state' = [state EXCEPT ![i] = Follower]
     /\ log' = [log EXCEPT ![i] = SubSeq(log[i], 1, Len(log[i])-1)]
+    \* If we do roll back an entry, adjust our commit index accordingly so it
+    \* doesn't point to something past the end of our new log. (TODO: is this safe?)
+    /\ commitIndex' = [commitIndex EXCEPT ![i] = Min({commitIndex[i], Len(log[i])-1})]
     \* There is no need to broadcast your state on this action.
-    /\ UNCHANGED <<candidateVars, msgs, leaderVars, commitIndex, votedFor, currentTerm>>
+    /\ UNCHANGED <<candidateVars, msgs, leaderVars, votedFor, currentTerm>>
 
 \* 
 \* Server i learns of a new commitIndex from some other server.
@@ -273,31 +265,19 @@ LeaderLearnsOfAppliedEntry(i, m) ==
     /\ matchIndex' = [matchIndex EXCEPT ![i][m.from] = Len(m.log)]
     /\ UNCHANGED <<serverVars, candidateVars, logVars, nextIndex, msgs>>
 
-UpdateTermAction == \E i \in Server : UpdateTerm(i)
-BecomeCandidateAction == \E i \in Server : BecomeCandidate(i)
-GrantVoteAction == \E i \in Server : \E m \in msgs : GrantVote(i, m)
-RecordGrantedVoteAction == \E i \in Server : \E m \in msgs : RecordGrantedVote(i, m)
-BecomeLeaderAction == \E i \in Server : BecomeLeader(i)
-ClientRequestAction == \E i \in Server : ClientRequest(i)
-AppendEntryAction == \E i \in Server : \E m \in msgs : AppendEntry(i, m)
-TruncateEntryAction == \E i \in Server : \E m \in msgs : TruncateEntry(i, m)
-LeaderLearnsOfAppliedEntryAction == \E i \in Server : \E m \in msgs : LeaderLearnsOfAppliedEntry(i, m)
-AdvanceCommitIndexAction == \E i \in Server : AdvanceCommitIndex(i)
-LearnCommitAction == \E i \in Server : \E m \in msgs : LearnCommit(i, m)
-
 \* Defines how the variables may transition.
 Next == 
-    \/ UpdateTermAction
-    \/ BecomeCandidateAction
-    \/ GrantVoteAction
-    \/ RecordGrantedVoteAction
-    \/ BecomeLeaderAction
-    \/ ClientRequestAction
-    \/ AppendEntryAction
-    \/ TruncateEntryAction
-    \/ LeaderLearnsOfAppliedEntryAction
-    \/ AdvanceCommitIndexAction
-    \/ LearnCommitAction
+    \/ \E i \in Server : UpdateTerm(i)
+    \/ \E i \in Server : BecomeCandidate(i)
+    \/ \E i \in Server : \E m \in msgs : GrantVote(i, m)
+    \/ \E i \in Server : \E m \in msgs : RecordGrantedVote(i, m)
+    \/ \E i \in Server : BecomeLeader(i)
+    \/ \E i \in Server : ClientRequest(i)
+    \/ \E i \in Server : \E m \in msgs : AppendEntry(i, m)
+    \/ \E i \in Server : \E m \in msgs : TruncateEntry(i, m)
+    \/ \E i \in Server : \E m \in msgs : LeaderLearnsOfAppliedEntry(i, m)
+    \/ \E i \in Server : AdvanceCommitIndex(i)
+    \/ \E i \in Server : \E m \in msgs : LearnCommit(i, m)
 
 Spec == Init /\ [][Next]_vars
 
@@ -333,7 +313,6 @@ H_OnePrimaryPerTerm ==
 
 \* Model checking stuff.
 
-
 CONSTANT MaxTerm
 CONSTANT MaxLogLen
 
@@ -356,6 +335,18 @@ SeqOf(S, n) == UNION {[1..m -> S] : m \in 0..n}
 BoundedSeq(S, n) == SeqOf(S, n)
 
 NextUnchanged == UNCHANGED vars
+
+UpdateTermAction == \E i \in Server : UpdateTerm(i)
+BecomeCandidateAction == \E i \in Server : BecomeCandidate(i)
+GrantVoteAction == \E i \in Server : \E m \in msgs : GrantVote(i, m)
+RecordGrantedVoteAction == \E i \in Server : \E m \in msgs : RecordGrantedVote(i, m)
+BecomeLeaderAction == \E i \in Server : BecomeLeader(i)
+ClientRequestAction == \E i \in Server : ClientRequest(i)
+AppendEntryAction == \E i \in Server : \E m \in msgs : AppendEntry(i, m)
+TruncateEntryAction == \E i \in Server : \E m \in msgs : TruncateEntry(i, m)
+LeaderLearnsOfAppliedEntryAction == \E i \in Server : \E m \in msgs : LeaderLearnsOfAppliedEntry(i, m)
+AdvanceCommitIndexAction == \E i \in Server : AdvanceCommitIndex(i)
+LearnCommitAction == \E i \in Server : \E m \in msgs : LearnCommit(i, m)
 
 \* RequestVoteRequestType == [
 \*     mtype         : {RequestVoteRequest},
