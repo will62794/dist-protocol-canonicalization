@@ -112,7 +112,7 @@ UniversalMsg(s) ==
     [
         from |-> s,
         currentTerm |-> currentTerm[s],
-        \* state |-> state[s],
+        state |-> state[s],
         votedFor |-> votedFor[s],
         log |-> log[s],
         commitIndex |-> commitIndex[s]
@@ -134,14 +134,12 @@ BecomeCandidate(i) ==
 
 \* ACTION: UpdateTerm
 \* Any RPC with a newer term causes the recipient to advance its term first.
-UpdateTerm(dest) ==
-    \E m \in msgs :
-        /\ m.currentTerm > currentTerm[dest]
-        /\ currentTerm'    = [currentTerm EXCEPT ![dest] = m.currentTerm]
-        /\ state'          = [state       EXCEPT ![dest] = Follower]
-        /\ votedFor'       = [votedFor    EXCEPT ![dest] = Nil]
-           \* messages is unchanged so m can be processed further.
-        /\ UNCHANGED <<msgs, candidateVars, leaderVars, logVars, msgs>>
+UpdateTerm(i, m) ==
+    /\ m.currentTerm > currentTerm[i]
+    /\ currentTerm'    = [currentTerm EXCEPT ![i] = m.currentTerm]
+    /\ state'          = [state       EXCEPT ![i] = Follower]
+    /\ votedFor'       = [votedFor    EXCEPT ![i] = Nil]
+    /\ UNCHANGED <<msgs, candidateVars, leaderVars, logVars, msgs>>
 
 \* Server i grants its vote to a candidate server.
 GrantVote(i, m) ==
@@ -268,7 +266,7 @@ LearnCommit(i, m) ==
 
 \* Defines how the variables may transition.
 Next == 
-    \/ \E i \in Server : UpdateTerm(i)
+    \/ \E i \in Server : \E m \in msgs : UpdateTerm(i, m)
     \/ \E i \in Server : BecomeCandidate(i)
     \/ \E i \in Server : \E m \in msgs : GrantVote(i, m)
     \/ \E i \in Server : \E m \in msgs : RecordGrantedVote(i, m)
@@ -337,7 +335,7 @@ BoundedSeq(S, n) == SeqOf(S, n)
 
 NextUnchanged == UNCHANGED vars
 
-UpdateTermAction == \E i \in Server : UpdateTerm(i)
+UpdateTermAction == \E i \in Server : \E m \in msgs : UpdateTerm(i, m)
 BecomeCandidateAction == \E i \in Server : BecomeCandidate(i)
 GrantVoteAction == \E i \in Server : \E m \in msgs : GrantVote(i, m)
 RecordGrantedVoteAction == \E i \in Server : \E m \in msgs : RecordGrantedVote(i, m)
