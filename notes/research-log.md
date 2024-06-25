@@ -46,3 +46,9 @@ Why can't anyoe advance commit points, including secondaries? Need matchIndex in
 How would you implement this optimization in standard Raft with its existing messaging patterns? You would need some additional message type that propagates this information explicitly between secondaries, for example. Similarly for chained replication? 
 
 Argument is that modeling and describing protocols with a pre-defined messaging/communication pattern restricts the space of possible implementations and optimizations...? Overly confining to specific implementation details. Becomes more pronounced as protocols become more complex with more message types, etc.?
+
+- Sometimes nodes mark down that they recorded a certain distributed state, and then propagate this information to others.
+- For example, `matchIndex` is maintained by a primary, but represents a way to record the distributed condition that a quorum of nodes have applied an entry in some term, which allows it to be considered committed.
+- This is then reflected in an update to `commitIndex`, which is then propagated to other nodes which learn about this distributed fact since it was recorded by the primary.
+- But, this privilege of learning about distributed states doesn't have to be limited to the primary always, right?
+- And, is it also possible that sometimes nodes learn of a distributed state, and then immediately send out a message which represents that they learned this distributed state, but without ever actually writing down the fact that they learned it explicitly? Is this a qualitatively different use of messages that should be accounted for in some protocols?
