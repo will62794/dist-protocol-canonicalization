@@ -40,3 +40,9 @@ Can specific messaging patterns simply be defined in terms of a straightforward 
 ## 2024-06-25
 
 If the universal message passing model can be viewed as one where every process can read any historical state of any other, does a concrete (more restrictive) messaging pattern simply represent a restriction on a subset of past states that certain nodes can read? For example, a secondary can only read logs from states where a node is primary (possibly in its same term), etc. 
+
+Why can't anyoe advance commit points, including secondaries? Need matchIndex information to be sent to you, which only comes via AppendEntries responses in standard Raft information flow. 
+
+How would you implement this optimization in standard Raft with its existing messaging patterns? You would need some additional message type that propagates this information explicitly between secondaries, for example. Similarly for chained replication? 
+
+Argument is that modeling and describing protocols with a pre-defined messaging/communication pattern restricts the space of possible implementations and optimizations...? Overly confining to specific implementation details. Becomes more pronounced as protocols become more complex with more message types, etc.?
