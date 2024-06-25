@@ -108,8 +108,8 @@ Init ==
 \* 
 \* Can omit unused information.
 \* 
-UniversalMsg(s) == 
-    [
+BroadcastUniversalMsg(s) == 
+    msgs' = msgs \cup {[
         from |-> s,
         currentTerm |-> currentTerm[s],
         state |-> state[s],
@@ -119,7 +119,7 @@ UniversalMsg(s) ==
         \* votesGranted |-> votesGranted[s],
         \* nextIndex |-> nextIndex[s],
         \* matchIndex |-> matchIndex[s]    
-    ]
+    ]}
 
 \* Update yourself to some newer term.
 UpdateTerm(i, m) ==
@@ -136,7 +136,7 @@ BecomeCandidate(i) ==
     /\ currentTerm' = [currentTerm EXCEPT ![i] = currentTerm[i] + 1]
     /\ votedFor' = [votedFor EXCEPT ![i] = i] \* votes for itself
     /\ votesGranted'   = [votesGranted EXCEPT ![i] = {i}] \* votes for itself
-    /\ msgs' = msgs \cup {UniversalMsg(i)}
+    /\ BroadcastUniversalMsg(i)
     /\ UNCHANGED <<leaderVars, logVars>>
 
 \* Server i grants its vote to a candidate server.
@@ -151,7 +151,7 @@ GrantVote(i, m) ==
                      /\ votedFor[i] \in {Nil, j} IN
             /\ m.currentTerm <= currentTerm[i]
             /\ votedFor' = [votedFor EXCEPT ![i] = IF grant THEN j ELSE votedFor[i]]
-            /\ msgs' = {UniversalMsg(i)}
+            /\ BroadcastUniversalMsg(i)
             /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, logVars>>
 
 \* Server i records a vote that was granted for it in its current term.
@@ -176,7 +176,7 @@ BecomeLeader(i) ==
 ClientRequest(i) ==
     /\ state[i] = Leader
     /\ log' = [log EXCEPT ![i] = Append(log[i], currentTerm[i])]
-    /\ msgs' = msgs \cup {UniversalMsg(i)}
+    /\ BroadcastUniversalMsg(i)
     /\ UNCHANGED <<serverVars, candidateVars,leaderVars, commitIndex>>
 
 \* Server i appends a new log entry from some other server.
@@ -189,8 +189,8 @@ AppendEntry(i, m) ==
     /\ Len(m.log) > Len(log[i])
     \* Only update logs in this action. Commit learning is done separately.
     /\ log' = [log EXCEPT ![i] = Append(log[i], m.log[Len(log[i]) + 1])]
-    /\ msgs' = msgs \cup {UniversalMsg(i)}
-    /\ UNCHANGED <<candidateVars, commitIndex, leaderVars, votedFor, currentTerm, state >>
+    /\ BroadcastUniversalMsg(i)
+    /\ UNCHANGED <<candidateVars, commitIndex, leaderVars, votedFor, currentTerm, state>>
        
 \* Server i truncates its log based on detection of some other divergent log in a newer term.
 TruncateEntry(i, m) ==
@@ -242,7 +242,8 @@ AdvanceCommitIndex(i) ==
        IN 
           /\ commitIndex[i] < newCommitIndex \* only enabled if it actually advances
           /\ commitIndex' = [commitIndex EXCEPT ![i] = newCommitIndex]
-    /\ UNCHANGED <<msgs, serverVars, candidateVars, leaderVars, log, msgs>>
+          /\ BroadcastUniversalMsg(i)
+    /\ UNCHANGED <<serverVars, candidateVars, leaderVars, log>>
 
 \* 
 \* Server i learns of a new commitIndex from some other server.
