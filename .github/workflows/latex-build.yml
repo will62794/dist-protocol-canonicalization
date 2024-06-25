@@ -30,7 +30,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: latest-main
+          tag_name: paper-${{ github.ref }}
           release_name: Release latest-main
           draft: false
           prerelease: false
