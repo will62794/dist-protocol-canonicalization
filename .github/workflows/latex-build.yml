@@ -24,28 +24,27 @@ jobs:
           latexmk -pdf -f main.tex
           # Add additional commands if needed, e.g., bibtex, makeindex, etc.
       
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: paper-${{ github.ref }}
-      #     release_name: Release latest-main
-      #     draft: false
-      #     prerelease: false
-          
-      - name: Tag latest-main
-        run: |
-          git tag latest-main
-          git push --force origin latest-main
-          
-      - name: Publish latest release
-        uses: softprops/action-gh-release@v2
+      - name: Delete old releases
+        uses: dev-drprasad/delete-older-releases@v0.3.4
         with:
-          name: Latest main
-          tag_name: latest-main
-          prerelease: true
+          repo: <owner>/<repoName> # defaults to current repo
+          keep_latest: 0
+          keep_min_download_counts: 1 # Optional parameters
+          delete_expired_data: 10 # Optional parameters
+          delete_tag_pattern: beta # defaults to ""
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: paper-${{ github.ref }}
+          release_name: Release latest-main
+          draft: false
+          prerelease: false
 
       - name: Upload Release Asset
         id: upload-release-asset 
