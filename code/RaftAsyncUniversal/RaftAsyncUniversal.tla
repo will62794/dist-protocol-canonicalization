@@ -121,6 +121,14 @@ UniversalMsg(s) ==
         \* matchIndex |-> matchIndex[s]    
     ]
 
+\* Update yourself to some newer term.
+UpdateTerm(i, m) ==
+    /\ m.currentTerm > currentTerm[i]
+    /\ currentTerm'    = [currentTerm EXCEPT ![i] = m.currentTerm]
+    /\ state'          = [state       EXCEPT ![i] = Follower]
+    /\ votedFor'       = [votedFor    EXCEPT ![i] = Nil]
+    /\ UNCHANGED <<msgs, candidateVars, leaderVars, logVars, msgs>>
+
 \* Server increments its term and becomes a candidate for election.
 BecomeCandidate(i) ==
     /\ state[i] \in {Follower, Candidate}
@@ -130,16 +138,6 @@ BecomeCandidate(i) ==
     /\ votesGranted'   = [votesGranted EXCEPT ![i] = {i}] \* votes for itself
     /\ msgs' = msgs \cup {UniversalMsg(i)}
     /\ UNCHANGED <<leaderVars, logVars>>
-
-
-\* ACTION: UpdateTerm
-\* Any RPC with a newer term causes the recipient to advance its term first.
-UpdateTerm(i, m) ==
-    /\ m.currentTerm > currentTerm[i]
-    /\ currentTerm'    = [currentTerm EXCEPT ![i] = m.currentTerm]
-    /\ state'          = [state       EXCEPT ![i] = Follower]
-    /\ votedFor'       = [votedFor    EXCEPT ![i] = Nil]
-    /\ UNCHANGED <<msgs, candidateVars, leaderVars, logVars, msgs>>
 
 \* Server i grants its vote to a candidate server.
 GrantVote(i, m) ==
