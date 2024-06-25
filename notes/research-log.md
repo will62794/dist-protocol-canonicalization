@@ -36,3 +36,7 @@ Is there also some notion of "maximal" progress that a node can take at each ste
 
 
 Can specific messaging patterns simply be defined in terms of a straightforward strengthening of a starting, "universal" message passing version of a protocol? By simply adding stronger preconditions that put restrictions on what type of node, for example, can send a message, and what type of node can receive it? And then we can also simply add a "label" to the message as well if we want, which further restricts things? This would then allow a straightforward refinement relationship between the universal version of the protocol and one that was instantiated with a specific messaging paradigm?
+
+## 2024-06-25
+
+If the universal message passing model can be viewed as one where every process can read any historical state of any other, does a concrete (more restrictive) messaging pattern simply represent a restriction on a subset of past states that certain nodes can read? For example, a secondary can only read logs from states where a node is primary (possibly in its same term), etc. 
