@@ -21,7 +21,7 @@ jobs:
       - name: Compile LaTeX document
         run: |
           cd paper
-          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          latexmk -pdf -f main.tex
           # Add additional commands if needed, e.g., bibtex, makeindex, etc.
       
       - name: Create Release
