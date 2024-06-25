@@ -1,0 +1,114 @@
+%%
+%% The first command in your LaTeX source must be the \documentclass
+%% command.
+%%
+%% For submission and review of your manuscript please change the
+%% command to \documentclass[manuscript, screen, review]{acmart}.
+%%
+%% When submitting camera ready or to TAPS, please change the command
+%% to \documentclass[sigconf]{acmart} or whichever template is required
+%% for your publication.
+%%
+%%
+\documentclass[acmsmall,screen,review]{acmart}
+
+
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{multicol}
+% \usepackage{amssymb}% http://ctan.org/pkg/amssymb
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+
+\usetikzlibrary {graphs}
+\usetikzlibrary{positioning}
+\usetikzlibrary {arrows.meta}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{backgrounds}
+
+
+\definecolor{darkishgreen}{RGB}{0,150,0} % RGB values range from 0 to 255
+
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\cmarkgreen}{\color{darkishgreen}\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\xmarkred}{\color{red}\ding{55}}%
+
+\newcommand*{\true}{\text{True}}
+\newcommand*{\false}{\text{False}}
+
+
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
+
+\begin{document}
+
+% Arrow format.
+\tikzset{>=latex}
+
+\newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
+
+% Annotation of paragraphs to summarize their intent in a short comment.
+% Can optionally show during drafting stage.
+
+% \newcommand{\pardesc}[1]{\textcolor{blue}{[\textit{#1}]}}
+\newcommand{\pardesc}[1]{}
+
+%%
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+
+% (Title Options).
+
+\title{Distributed Protocol Canonicalization via Universal Message Passing}
+
+%%
+%% The "author" command and its associated commands are used to define
+%% the authors and their affiliations.
+%% Of note is the shared affiliation of the first two authors, and the
+%% "authornote" and "authornotemark" commands
+%% used to denote shared contribution to the research.
+\author{William Schultz}
+\orcid{1234-5678-9012}
+% \authornotemark[1]
+\email{schultz.w@northeastern.edu}
+\affiliation{%
+  \institution{Northeastern University}
+  \city{Boston}
+  \state{Massachusetts}
+  \country{USA}
+}
+
+\begin{abstract}
+    Formal modeling and specification of distributed protocols has found significant use in industry, and has been effective for finding bugs in protocol designs and communicating the behavior of protocols in a more precise manner. In practice, however, formal descriptions of these distributed protocols can still suffer from being complex and difficult to understand when specified at sufficient level of detail to fully capture fine-grained, asynchronous message passing details. This complexity leads to confusion around the separation between (1) the messaging-specific details and communication patterns of a protocol and (2) the essential behavior required for ensuring correctness.
+    Thus, a valuable goal aim is to explore approaches for abstracting away these message passing details and communication patterns of a protocol to the extent possible in the “textbook”, formal descriptions of protocols. We argue that they are a significant source of additional complexity within protocol models, that are particularly tedious and error prone when making modifications or optimizations to a protocol, especially as a protocol diverges further from a “textbook” description. We define a universal, “canonical” message passing model for how we specify message passing distributed protocols, that facilitates easier protocol comprehension, comparison, and modification.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Formal modeling and specification of distributed protocols has found significant use in industry [1,2], including at MongoDB, and has been effective for finding bugs in protocol designs and communicating the behavior of protocols in a more precise manner. In practice, however, formal descriptions of these distributed protocols can still suffer from being complex and difficult to understand when specified at sufficient level of detail to fully capture fine-grained, asynchronous message passing details [1,2,3]. This complexity leads to confusion around the separation between (1) the messaging-specific details and communication patterns of a protocol and (2) the essential behavior required for ensuring correctness.
+
+For example, in MongoDB’s own Raft protocol variant, there has historically been significant deliberation around how state is correctly propagated between nodes, and when it is safe to learn certain facts via certain message types. Information also flows between nodes in MongoDB’s protocol in different patterns than in standard Raft (e.g. via replSetUpdatePosition, replSetHeartbeat, chain replication, etc.), though it has generally been understood that both protocols rely on essentially the same correctness arguments. More generally, protocols like Viewstamped Replication (VR) and Raft have, on the surface, quite different messaging types/patterns (e.g. AppendEntries, RequestVote in Raft, Prepare, ViewChange, etc. in VR), though the protocols are often considered by the community as fundamentally similar. Paxos/MultiPaxos and Raft suffer from a similar divergence in these details. 
+
+Thus, our aim is to explore approaches for abstracting away these message passing details and communication patterns of a protocol to the extent possible in the “textbook”, formal descriptions of protocols. We argue that they are a significant source of additional complexity within protocol models, that are particularly tedious and error prone when making modifications or optimizations to a protocol, especially as a protocol diverges further from a “textbook” description. Overall, our goal is to define a more universal, “canonical” model for how we specify message passing distributed protocols, that facilitates easier protocol comprehension, comparison, and modification.
+
+\section{Related Work}
+
+DistAlgo defines a DSL for defining distributed algorithms at a high level, which can then be compiled into runnable implementations via incrementalization algorithms \cite{2017claritydistalgo}. Using the Dedalus language for modeling protocols \cite{2024optprotrewrites} designs approaches for automatically scaling distributed protocols via locally defined rewrite rules. This is similar in that it looks at how to abstract away the details of a protocol to make it more scalable, but it is focused on the runtime performance of a protocol, rather than the specification/correctness of a protocol.
+
+
+\bibliographystyle{acm}
+\bibliography{../references/references}
+
+\end{document}

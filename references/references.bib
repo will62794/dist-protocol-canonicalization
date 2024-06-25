@@ -1,0 +1,2176 @@
+@inproceedings{2016padonivy,
+author = {Padon, Oded and McMillan, Kenneth L. and Panda, Aurojit and Sagiv, Mooly and Shoham, Sharon},
+title = {{Ivy: Safety Verification by Interactive Generalization}},
+year = {2016},
+isbn = {9781450342612},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2908080.2908118},
+doi = {10.1145/2908080.2908118},
+abstract = {Despite several decades of research, the problem of formal verification of infinite-state systems has resisted effective automation. We describe a system --- Ivy --- for interactively verifying safety of infinite-state systems. Ivy's key principle is that whenever verification fails, Ivy graphically displays a concrete counterexample to induction. The user then interactively guides generalization from this counterexample. This process continues until an inductive invariant is found. Ivy searches for universally quantified invariants, and uses a restricted modeling language. This ensures that all verification conditions can be checked algorithmically. All user interactions are performed using graphical models, easing the user's task. We describe our initial experience with verifying several distributed protocols.},
+booktitle = {Proceedings of the 37th ACM SIGPLAN Conference on Programming Language Design and Implementation},
+pages = {614–630},
+numpages = {17},
+keywords = {counterexamples to induction, invariant inference, distributed systems, safety verification},
+location = {Santa Barbara, CA, USA},
+series = {PLDI '16}
+}
+@inproceedings{2021ic3posymmetry,
+author = {Goel, Aman and Sakallah, Karem},
+title = {{On Symmetry and Quantification: A New Approach to Verify Distributed Protocols}},
+year = {2021},
+isbn = {978-3-030-76383-1},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+url = {https://doi.org/10.1007/978-3-030-76384-8_9},
+doi = {10.1007/978-3-030-76384-8_9},
+abstract = {Proving that an unbounded distributed protocol satisfies a given safety property amounts to finding a quantified inductive invariant that implies the property for all possible instance sizes of the protocol. Existing methods for solving this problem can be described as search procedures for an invariant whose quantification prefix fits a particular template. We propose an alternative constructive approach that does not prescribe, a priori, a specific quantifier prefix. Instead, the required prefix is automatically inferred without any search by carefully analyzing the structural symmetries of the protocol. The key insight underlying this approach is that symmetry and quantification are closely related concepts that express protocol invariance under different re-arrangements of its components. We propose symmetric incremental induction, an extension of the finite-domain IC3/PDR algorithm, that automatically derives the required quantified inductive invariant by exploiting the connection between symmetry and quantification. While various attempts have been made to exploit symmetry in verification applications, to our knowledge, this is the first demonstration of a direct link between symmetry and quantification in the context of clause learning during incremental induction. We also describe a procedure to automatically find a minimal finite size, the cutoff, that yields a quantified invariant proving safety for any size.Our approach is implemented in IC3PO, a new verifier for distributed protocols that significantly outperforms the state-of-the-art, scales orders of magnitude faster, and robustly derives compact inductive invariants fully automatically.},
+booktitle = {NASA Formal Methods: 13th International Symposium, NFM 2021, Virtual Event, May 24–28, 2021, Proceedings},
+pages = {131–150},
+numpages = {20}
+}
+@article{2017updr,
+author = {Karbyshev, Aleksandr and Bj\o{}rner, Nikolaj and Itzhaky, Shachar and Rinetzky, Noam and Shoham, Sharon},
+title = {{Property-Directed Inference of Universal Invariants or Proving Their Absence}},
+year = {2017},
+issue_date = {February 2017},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {64},
+number = {1},
+issn = {0004-5411},
+url = {https://doi.org/10.1145/3022187},
+doi = {10.1145/3022187},
+abstract = {We present Universal Property Directed Reachability (PDR∀), a property-directed semi-algorithm for automatic inference of invariants in a universal fragment of first-order logic. PDR∀ is an extension of Bradley’s PDR/IC3 algorithm for inference of propositional invariants. PDR∀ terminates when it discovers a concrete counterexample, infers an inductive universal invariant strong enough to establish the desired safety property, or finds a proof that such an invariant does not exist. PDR∀ is not guaranteed to terminate. However, we prove that under certain conditions, for example, when reasoning about programs manipulating singly linked lists, it does.We implemented an analyzer based on PDR∀ and applied it to a collection of list-manipulating programs. Our analyzer was able to automatically infer universal invariants strong enough to establish memory safety and certain functional correctness properties, show the absence of such invariants for certain natural programs and specifications, and detect bugs. All this without the need for user-supplied abstraction predicates.},
+journal = {J. ACM},
+month = {mar},
+articleno = {7},
+numpages = {33},
+keywords = {Universal invariants, EPR, property-directed reachability, IC3, PDR}
+}
+@inproceedings{2011ic3bradley,
+author = {Bradley, Aaron R.},
+title = {{SAT-Based Model Checking without Unrolling}},
+year = {2011},
+isbn = {9783642182747},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+abstract = {A new form of SAT-based symbolic model checking is described. Instead of unrolling the transition relation, it incrementally generates clauses that are inductive relative to (and augment) stepwise approximate reachability information. In this way, the algorithm gradually refines the property, eventually producing either an inductive strengthening of the property or a counterexample trace. Our experimental studies show that induction is a powerful tool for generalizing the unreachability of given error states: it can refine away many states at once, and it is effective at focusing the proof search on aspects of the transition system relevant to the property. Furthermore, the incremental structure of the algorithm lends itself to a parallel implementation.},
+booktitle = {Proceedings of the 12th International Conference on Verification, Model Checking, and Abstract Interpretation},
+pages = {70–87},
+numpages = {18},
+location = {Austin, TX, USA},
+series = {VMCAI'11}
+}
+@InProceedings{2003interpolationmcmillan,
+author="McMillan, K. L.",
+editor="Hunt, Warren A.
+and Somenzi, Fabio",
+title={{Interpolation and SAT-Based Model Checking}},
+booktitle="Computer Aided Verification",
+year="2003",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="1--13",
+abstract="We consider a fully SAT-based method of unbounded symbolic model checking based on computing Craig interpolants. In benchmark studies using a set of large industrial circuit verification instances, this method is greatly more efficient than BDD-based symbolic model checking, and compares favorably to some recent SAT-based model checking methods on positive instances.",
+isbn="978-3-540-45069-6"
+}
+
+@inproceedings {2021swisshance,
+author = {Travis Hance and Marijn Heule and Ruben Martins and Bryan Parno},
+title = {{Finding Invariants of Distributed Systems: It{\textquoteright}s a Small (Enough) World After All}},
+booktitle = {18th USENIX Symposium on Networked Systems Design and Implementation (NSDI 21)},
+year = {2021},
+isbn = {978-1-939133-21-2},
+pages = {115--131},
+url = {https://www.usenix.org/conference/nsdi21/presentation/hance},
+publisher = {USENIX Association},
+month = apr,
+}
+@inproceedings{2015ironfleet,
+author = {Hawblitzel, Chris and Howell, Jon and Kapritsos, Manos and Lorch, Jacob R. and Parno, Bryan and Roberts, Michael L. and Setty, Srinath and Zill, Brian},
+title = {{IronFleet: Proving Practical Distributed Systems Correct}},
+year = {2015},
+isbn = {9781450338349},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2815400.2815428},
+doi = {10.1145/2815400.2815428},
+abstract = {Distributed systems are notorious for harboring subtle bugs. Verification can, in principle, eliminate these bugs a priori, but verification has historically been difficult to apply at full-program scale, much less distributed-system scale.We describe a methodology for building practical and provably correct distributed systems based on a unique blend of TLA-style state-machine refinement and Hoare-logic verification. We demonstrate the methodology on a complex implementation of a Paxos-based replicated state machine library and a lease-based sharded key-value store. We prove that each obeys a concise safety specification, as well as desirable liveness requirements. Each implementation achieves performance competitive with a reference system. With our methodology and lessons learned, we aim to raise the standard for distributed systems from "tested" to "correct."},
+booktitle = {Proceedings of the 25th Symposium on Operating Systems Principles},
+pages = {1–17},
+numpages = {17},
+location = {Monterey, California},
+series = {SOSP '15}
+}
+@inproceedings{2016padondecidability,
+author = {Padon, Oded and Immerman, Neil and Shoham, Sharon and Karbyshev, Aleksandr and Sagiv, Mooly},
+title = {{Decidability of Inferring Inductive Invariants}},
+year = {2016},
+isbn = {9781450335492},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2837614.2837640},
+doi = {10.1145/2837614.2837640},
+abstract = {Induction is a successful approach for verification of hardware and software systems. A common practice is to model a system using logical formulas, and then use a decision procedure to verify that some logical formula is an inductive safety invariant for the system. A key ingredient in this approach is coming up with the inductive invariant, which is known as invariant inference. This is a major difficulty, and it is often left for humans or addressed by sound but incomplete abstract interpretation. This paper is motivated by the problem of inductive invariants in shape analysis and in distributed protocols. This paper approaches the general problem of inferring first-order inductive invariants by restricting the language L of candidate invariants. Notice that the problem of invariant inference in a restricted language L differs from the safety problem, since a system may be safe and still not have any inductive invariant in L that proves safety. Clearly, if L is finite (and if testing an inductive invariant is decidable), then inferring invariants in L is decidable. This paper presents some interesting cases when inferring inductive invariants in L is decidable even when L is an infinite language of universal formulas. Decidability is obtained by restricting L and defining a suitable well-quasi-order on the state space. We also present some undecidability results that show that our restrictions are necessary. We further present a framework for systematically constructing infinite languages while keeping the invariant inference problem decidable. We illustrate our approach by showing the decidability of inferring invariants for programs manipulating linked-lists, and for distributed protocols.},
+booktitle = {Proceedings of the 43rd Annual ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages},
+pages = {217–231},
+numpages = {15},
+keywords = {verification, effectively propositional logic, well-quasi-order, invariant inference},
+location = {St. Petersburg, FL, USA},
+series = {POPL '16}
+}
+
+@inproceedings{berryhill2017learning,
+  title={{Learning support sets in IC3 and Quip: The good, the bad, and the ugly}},
+  author={Berryhill, Ryan and Ivrii, Alexander and Veira, Neil and Veneris, Andreas},
+  booktitle={2017 Formal Methods in Computer Aided Design (FMCAD)},
+  pages={140--147},
+  year={2017},
+  organization={IEEE}
+}
+
+
+@article{ryan2019cln2inv,
+  title   = {CLN2INV: learning loop invariants with continuous logic networks},
+  author  = {Ryan, Gabriel and Wong, Justin and Yao, Jianan and Gu, Ronghui and Jana, Suman},
+  journal = {arXiv preprint arXiv:1909.11542},
+  year    = {2019}
+}
+@inproceedings{goel2020avr,
+  title        = {AVR: Abstractly Verifying Reachability},
+  author       = {Goel, Aman and Sakallah, Karem},
+  booktitle    = {International Conference on Tools and Algorithms for the Construction and Analysis of Systems},
+  pages        = {413--422},
+  year         = {2020},
+  organization = {Springer}
+}
+
+@inproceedings{bradley2012understanding,
+  title        = {Understanding IC3},
+  author       = {Bradley, Aaron R},
+  booktitle    = {International Conference on Theory and Applications of Satisfiability Testing},
+  pages        = {1--14},
+  year         = {2012},
+  organization = {Springer}
+}
+
+@inproceedings{feldman2019inferring,
+  title        = {Inferring inductive invariants from phase structures},
+  author       = {Feldman, Yotam MY and Wilcox, James R and Shoham, Sharon and Sagiv, Mooly},
+  booktitle    = {International Conference on Computer Aided Verification},
+  pages        = {405--425},
+  year         = {2019},
+  organization = {Springer}
+}
+
+@inproceedings{arons2001parameterized,
+  title        = {Parameterized verification with automatically computed inductive assertions?},
+  author       = {Arons, Tamarah and Pnueli, Amir and Ruah, Sitvanit and Xu, Ying and Zuck, Lenore},
+  booktitle    = {International Conference on Computer Aided Verification},
+  pages        = {221--234},
+  year         = {2001},
+  organization = {Springer}
+}
+
+@article{ernst2007daikon,
+  title     = {{The Daikon system for dynamic detection of likely invariants}},
+  author    = {Ernst, Michael D and Perkins, Jeff H and Guo, Philip J and McCamant, Stephen and Pacheco, Carlos and Tschantz, Matthew S and Xiao, Chen},
+  journal   = {Science of computer programming},
+  volume    = {69},
+  number    = {1-3},
+  pages     = {35--45},
+  year      = {2007},
+  publisher = {Elsevier}
+}
+
+@article{feldman2019complexity,
+  title     = {Complexity and information in invariant inference},
+  author    = {Feldman, Yotam MY and Immerman, Neil and Sagiv, Mooly and Shoham, Sharon},
+  journal   = {Proceedings of the ACM on Programming Languages},
+  volume    = {4},
+  number    = {POPL},
+  pages     = {1--29},
+  year      = {2019},
+  publisher = {ACM New York, NY, USA}
+}
+
+@article{feldman2021learning,
+  title     = {Learning the boundary of inductive invariants},
+  author    = {Feldman, Yotam MY and Sagiv, Mooly and Shoham, Sharon and Wilcox, James R},
+  journal   = {Proceedings of the ACM on Programming Languages},
+  volume    = {5},
+  number    = {POPL},
+  pages     = {1--30},
+  year      = {2021},
+  publisher = {ACM New York, NY, USA}
+}
+
+
+@inproceedings{LiuWahlLalCAV2019,
+  author    = {Peizun Liu and Thomas Wahl and Akash Lal},
+  title     = {Verifying Asynchronous Event-Driven Programs Using Partial Abstract Transformers},
+  booktitle = {Computer Aided Verification (CAV)},
+  year      = {2019}
+}
+
+
+
+@article{DBLP:journals/jcss/DolevHJKLRSW16,
+  author    = {Danny Dolev and
+               Keijo Heljanko and
+               Matti J{\"{a}}rvisalo and
+               Janne H. Korhonen and
+               Christoph Lenzen and
+               Joel Rybicki and
+               Jukka Suomela and
+               Siert Wieringa},
+  title     = {Synchronous counting and computational algorithm design},
+  journal   = {J. Comput. Syst. Sci.},
+  volume    = {82},
+  number    = {2},
+  pages     = {310--332},
+  year      = {2016},
+  url       = {https://doi.org/10.1016/j.jcss.2015.09.002},
+  doi       = {10.1016/j.jcss.2015.09.002},
+  timestamp = {Tue, 16 Feb 2021 14:03:44 +0100},
+  biburl    = {https://dblp.org/rec/journals/jcss/DolevHJKLRSW16.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@book{mannasafetybook,
+author = {Manna, Zohar and Pnueli, Amir},
+title = {Temporal Verification of Reactive Systems: Safety},
+year = {1995},
+isbn = {0387944591},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg}
+}
+
+@inproceedings{somenzi2011ic3,
+  title        = {IC3: where monolithic and incremental meet},
+  author       = {Somenzi, Fabio and Bradley, Aaron R},
+  booktitle    = {2011 Formal Methods in Computer-Aided Design (FMCAD)},
+  pages        = {3--8},
+  year         = {2011},
+  organization = {IEEE}
+}
+
+@incollection{chaki2018bdd,
+  title     = {BDD-based symbolic model checking},
+  author    = {Chaki, Sagar and Gurfinkel, Arie},
+  booktitle = {Handbook of Model Checking},
+  pages     = {219--245},
+  year      = {2018},
+  publisher = {Springer}
+}
+
+@inbook{Biere2018,
+  author    = {Biere, Armin
+and Kr{\"o}ning, Daniel},
+  editor    = {Clarke, Edmund M.
+and Henzinger, Thomas A.
+and Veith, Helmut
+and Bloem, Roderick},
+  title     = {SAT-Based Model Checking},
+  booktitle = {Handbook of Model Checking},
+  year      = {2018},
+  publisher = {Springer International Publishing},
+  address   = {Cham},
+  pages     = {277--303},
+  abstract  = {Modern satisfiability (SAT) solvers have become the enabling technology of many model checkers. In this chapter, we will focus on those techniques most relevant to industrial practice. In bounded model checking (BMC), a transition system and a property are jointly unwound for a given number k{\$}k{\$}of steps to obtain a formula that is satisfiable if there is a counterexample for the property up to length k{\$}k{\$}. The formula is then passed to an efficient SAT solver. The strength of BMC is refutation: BMC has been used to discover subtle flaws in digital systems. We cover the application of BMC to both hardware and software systems, and to hardware/software co-verification. We also discuss means to make BMC complete, including k{\$}k{\$}-induction, Craig interpolation, abstraction refinement techniques, and inductive techniques with iterative strengthening.},
+  isbn      = {978-3-319-10575-8},
+  doi       = {10.1007/978-3-319-10575-8_10},
+  url       = {https://doi.org/10.1007/978-3-319-10575-8_10}
+}
+
+@inproceedings{bradley2007checking,
+  title        = {Checking safety by inductive generalization of counterexamples to induction},
+  author       = {Bradley, Aaron R and Manna, Zohar},
+  booktitle    = {Formal Methods in Computer Aided Design (FMCAD'07)},
+  pages        = {173--180},
+  year         = {2007},
+  organization = {IEEE}
+}
+
+@inproceedings{balaban2005iiv,
+  title        = {IIV: An invisible invariant verifier},
+  author       = {Balaban, Ittai and Fang, Yi and Pnueli, Amir and Zuck, Lenore D},
+  booktitle    = {International Conference on Computer Aided Verification},
+  pages        = {408--412},
+  year         = {2005},
+  organization = {Springer}
+}
+
+@inproceedings{garg2014ice,
+  title        = {ICE: A robust framework for learning invariants},
+  author       = {Garg, Pranav and L{\"o}ding, Christof and Madhusudan, P and Neider, Daniel},
+  booktitle    = {International Conference on Computer Aided Verification},
+  pages        = {69--87},
+  year         = {2014},
+  organization = {Springer}
+}
+
+@article{garg2016learning,
+  title     = {Learning invariants using decision trees and implication counterexamples},
+  author    = {Garg, Pranav and Neider, Daniel and Madhusudan, Parthasarathy and Roth, Dan},
+  journal   = {ACM Sigplan Notices},
+  volume    = {51},
+  number    = {1},
+  pages     = {499--512},
+  year      = {2016},
+  publisher = {ACM New York, NY, USA}
+}
+@inproceedings{sharma2016invariant,
+  author    = {Rahul Sharma and
+               Alex Aiken},
+  editor    = {Armin Biere and
+               Roderick Bloem},
+  title     = {{From Invariant Checking to Invariant Inference Using Randomized Search}},
+  booktitle = {Computer Aided Verification - 26th International Conference, {CAV}
+               2014, Held as Part of the Vienna Summer of Logic, {VSL} 2014, Vienna,
+               Austria, July 18-22, 2014. Proceedings},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {8559},
+  pages     = {88--105},
+  publisher = {Springer},
+  year      = {2014},
+  url       = {https://doi.org/10.1007/978-3-319-08867-9\_6},
+  doi       = {10.1007/978-3-319-08867-9\_6},
+  timestamp = {Mon, 03 Jan 2022 22:13:44 +0100},
+  biburl    = {https://dblp.org/rec/conf/cav/0001A14.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+@inproceedings{balaban2006invisible,
+  title        = {Invisible safety of distributed protocols},
+  author       = {Balaban, Ittai and Pnueli, Amir and Zuck, Lenore D},
+  booktitle    = {International Colloquium on Automata, Languages, and Programming},
+  pages        = {528--539},
+  year         = {2006},
+  organization = {Springer}
+}
+
+@article{cimatti2016infinite,
+  title     = {Infinite-state invariant checking with IC3 and predicate abstraction},
+  author    = {Cimatti, Alessandro and Griggio, Alberto and Mover, Sergio and Tonetta, Stefano},
+  journal   = {Formal Methods in System Design},
+  volume    = {49},
+  number    = {3},
+  pages     = {190--218},
+  year      = {2016},
+  publisher = {Springer}
+}
+
+@incollection{biere09,
+  author    = {Armin Biere},
+  editor    = {Armin Biere and
+               Marijn Heule and
+               Hans van Maaren and
+               Toby Walsh},
+  title     = {{Bounded Model Checking}},
+  booktitle = {Handbook of Satisfiability},
+  series    = {Frontiers in Artificial Intelligence and Applications},
+  volume    = {185},
+  pages     = {457--481},
+  publisher = {{IOS} Press},
+  year      = {2009},
+  url       = {https://doi.org/10.3233/978-1-58603-929-5-457},
+  doi       = {10.3233/978-1-58603-929-5-457},
+  timestamp = {Mon, 16 Sep 2019 14:43:06 +0200},
+  biburl    = {https://dblp.org/rec/series/faia/Biere09.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{clarke1981design,
+  title        = {Design and synthesis of synchronization skeletons using branching time temporal logic},
+  author       = {Clarke, Edmund M and Emerson, E Allen},
+  booktitle    = {Workshop on Logic of Programs},
+  pages        = {52--71},
+  year         = {1981},
+  organization = {Springer}
+}
+
+@article{burch1992symbolic,
+author = {Burch, J. R. and Clarke, E. M. and McMillan, K. L. and Dill, D. L. and Hwang, L. J.},
+title = {Symbolic Model Checking: $10^{20}$ States and Beyond},
+year = {1992},
+issue_date = {June 1992},
+publisher = {Academic Press, Inc.},
+address = {USA},
+volume = {98},
+number = {2},
+issn = {0890-5401},
+url = {https://doi.org/10.1016/0890-5401(92)90017-A},
+doi = {10.1016/0890-5401(92)90017-A},
+journal = {Inf. Comput.},
+month = {jun},
+pages = {142–170},
+numpages = {29}
+}
+@inproceedings{McMillan_2002,
+  title        = {Applying sat methods in unbounded symbolic model checking},
+  isbn         = {9783540439974},
+  issn         = {16113349},
+  doi          = {10.1007/3-540-45657-0_19},
+  abstractnote = {A method of symbolic model checking is introduced that uses conjunctive normal form (CNF) rather than binary decision diagrams (BDD’s) and uses a SAT-based approach to quantifier elimination. This method is compared to a traditional BDD-based model checking approach using a set of benchmark problems derived from the compositional verification of a commercial microprocessor design.},
+  booktitle    = {Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)},
+  author       = {McMillan, Ken L.},
+  year         = {2002}
+}
+
+@inproceedings{sheeran2000checking,
+  title={Checking safety properties using induction and a SAT-solver},
+  author={Sheeran, Mary and Singh, Satnam and St{\aa}lmarck, Gunnar},
+  booktitle={International conference on formal methods in computer-aided design},
+  pages={127--144},
+  year={2000},
+  organization={Springer}
+}
+
+@article{newcombe2014use,
+author = {Newcombe, Chris and Rath, Tim and Zhang, Fan and Munteanu, Bogdan and Brooker, Marc and Deardeuff, Michael},
+title = {{How Amazon Web Services Uses Formal Methods}},
+year = {2015},
+issue_date = {April 2015},
+publisher = {Association for Computing Machinery},
+
+volume = {58},
+number = {4},
+issn = {0001-0782},
+url = {https://doi.org/10.1145/2699417},
+doi = {10.1145/2699417},
+abstract = {Engineers use TLA+ to prevent serious but subtle bugs from reaching production.},
+journal = {Commun. ACM},
+month = {March},
+pages = {66–73},
+numpages = {8}
+}
+@inproceedings{braithwaite2020formal,
+  title={{Formal Specification and Model Checking of the Tendermint Blockchain Synchronization Protocol (Short Paper)}},
+  author={Braithwaite, Sean and Buchman, Ethan and Konnov, Igor and Milosevic, Zarko and Stoilkovska, Ilina and Widder, Josef and Zamfir, Anca},
+  booktitle={2nd Workshop on Formal Methods for Blockchains (FMBC 2020)},
+  year={2020},
+  organization={Schloss Dagstuhl-Leibniz-Zentrum f{\"u}r Informatik}
+}
+
+@misc{blogfvtendermint,
+  title = {{Formally Verifying the Tendermint Blockchain Protocol}},
+  howpublished = {\url{https://galois.com/blog/2021/07/formally-verifying-the-tendermint-blockchain-protocol/}},
+  note = {Accessed: 2023-10-09}
+}
+
+@inproceedings{clarke2001progress,
+  title={Progress on the state explosion problem in model checking},
+  author={Clarke, Edmund and Grumberg, Orna and Jha, Somesh and Lu, Yuan and Veith, Helmut},
+  booktitle={Informatics},
+  pages={176--194},
+  year={2001},
+  organization={Springer}
+}
+
+@inproceedings{de2008z3,
+  title={{Z3: An efficient SMT solver}},
+  author={De Moura, Leonardo and Bj{\o}rner, Nikolaj},
+  booktitle={International conference on Tools and Algorithms for the Construction and Analysis of Systems},
+  pages={337--340},
+  year={2008},
+  organization={Springer}
+}
+
+@article{flanagan2005dynamic,
+  title={Dynamic partial-order reduction for model checking software},
+  author={Flanagan, Cormac and Godefroid, Patrice},
+  journal={ACM Sigplan Notices},
+  volume={40},
+  number={1},
+  pages={110--121},
+  year={2005},
+  publisher={ACM New York, NY, USA}
+}
+
+@article{chalupa2017data,
+  title={Data-centric dynamic partial order reduction},
+  author={Chalupa, Marek and Chatterjee, Krishnendu and Pavlogiannis, Andreas and Sinha, Nishant and Vaidya, Kapil},
+  journal={Proceedings of the ACM on Programming Languages},
+  volume={2},
+  number={POPL},
+  pages={1--30},
+  year={2017},
+  publisher={ACM New York, NY, USA}
+}
+@inproceedings {yao2021distai,
+author = {Jianan Yao and Runzhou Tao and Ronghui Gu and Jason Nieh and Suman Jana and Gabriel Ryan},
+title = {{{DistAI}: {Data-Driven} Automated Invariant Learning for Distributed Protocols}},
+booktitle = {15th USENIX Symposium on Operating Systems Design and Implementation (OSDI 21)},
+year = {2021},
+isbn = {978-1-939133-22-9},
+pages = {405--421},
+url = {https://www.usenix.org/conference/osdi21/presentation/yao},
+publisher = {USENIX Association},
+month = jul,
+}
+@inproceedings{woos2016planning,
+author = {Woos, Doug and Wilcox, James R. and Anton, Steve and Tatlock, Zachary and Ernst, Michael D. and Anderson, Thomas},
+title = {{Planning for Change in a Formal Verification of the Raft Consensus Protocol}},
+year = {2016},
+isbn = {9781450341271},
+publisher = {Association for Computing Machinery},
+url = {https://doi.org/10.1145/2854065.2854081},
+doi = {10.1145/2854065.2854081},
+abstract = { We present the first formal verification of state machine safety for the Raft consensus protocol, a critical component of many distributed systems. We connected our proof to previous work to establish an end-to-end guarantee that our implementation provides linearizable state machine replication. This proof required iteratively discovering and proving 90 system invariants. Our verified implementation is extracted to OCaml and runs on real networks. The primary challenge we faced during the verification process was proof maintenance, since proving one invariant often required strengthening and updating other parts of our proof. To address this challenge, we propose a methodology of planning for change during verification. Our methodology adapts classical information hiding techniques to the context of proof assistants, factors out common invariant-strengthening patterns into custom induction principles, proves higher-order lemmas that show any property proved about a particular component implies analogous properties about related components, and makes proofs robust to change using structural tactics. We also discuss how our methodology may be applied to systems verification more broadly. },
+booktitle = {Proceedings of the 5th ACM SIGPLAN Conference on Certified Programs and Proofs},
+pages = {154–165},
+numpages = {12},
+keywords = {Formal verification, Verdi, proof assistants, distributed systems, Raft, Coq},
+location = {St. Petersburg, FL, USA},
+series = {CPP 2016}
+}
+@inproceedings{chand2016formal,
+  title={{Formal Verification of Multi-Paxos for Distributed Consensus}},
+  author={Chand, Saksham and Liu, Yanhong A and Stoller, Scott D},
+  booktitle={International Symposium on Formal Methods},
+  pages={119--136},
+  year={2016},
+  organization={Springer}
+}
+@misc{Lamport2018UsingTT,
+  title={{Using TLC to Check Inductive Invariance}},
+  author={Leslie Lamport},
+  year={2018},
+  url={http://lamport.azurewebsites.net/tla/inductive-invariant.pdf},
+  howpublished={\url{http://lamport.azurewebsites.net/tla/inductive-invariant.pdf}}
+}
+@Article{cousineau2012tla,
+author = {Cousineau, Denis and Doligez, Damien and Lamport, Leslie and Merz, Stephan and Ricketts, Daniel and Vanzetto, Hernan},
+title = {{TLA+ Proofs}},
+year = {2012},
+month = {January},
+abstract = {This is a short paper describing TLAPS, the TLA+ proof system being developed at the Microsoft Research-INRIA Joint Centre.},
+url = {https://www.microsoft.com/en-us/research/publication/tla-proofs/},
+pages = {147-154},
+journal = {Proceedings of the 18th International Symposium on Formal Methods (FM 2012), Dimitra Giannakopoulou and Dominique Mery, editors. Springer-Verlag Lecture Notes in Computer Science},
+volume = {7436},
+}
+@article{Wernick1942CompleteSO,
+  title={Complete sets of logical functions},
+  author={William Wernick},
+  journal={Transactions of the American Mathematical Society},
+  year={1942},
+  volume={51},
+  pages={117-132}
+}
+@InProceedings{tlcmodelchecker,
+author="Yu, Yuan
+and Manolios, Panagiotis
+and Lamport, Leslie",
+editor="Pierre, Laurence
+and Kropf, Thomas",
+title={{Model Checking TLA+ Specifications}},
+booktitle="Correct Hardware Design and Verification Methods",
+year="1999",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="54--66",
+abstract="TLA+ is a specification language for concurrent and reactive systems that combines the temporal logic TLA with full first-order logic and ZF set theory. TLC is a new model checker for debugging a TLA+ specification by checking invariance properties of a finite-state model of the specification. It accepts a subclass of TLA+ specifications that should include most descriptions of real system designs. It has been used by engineers to find errors in the cache coherence protocol for a new Compaq multiprocessor. We describe TLA+ specifications and their TLC models, how TLC works, and our experience using it.",
+isbn="978-3-540-48153-9"
+}
+@book{lamport2002specifying,
+  author = {Lamport, Leslie},
+  month = {Jun},
+  publisher = {Addison-Wesley},
+  title = {{Specifying Systems: The TLA+ Language and Tools for Hardware and Software Engineers}},
+  year = {2002}
+}
+@article{padonpaxosEPR,
+author = {Padon, Oded and Losa, Giuliano and Sagiv, Mooly and Shoham, Sharon},
+title = {{Paxos Made EPR: Decidable Reasoning about Distributed Protocols}},
+year = {2017},
+issue_date = {October 2017},
+publisher = {Association for Computing Machinery},
+volume = {1},
+number = {OOPSLA},
+url = {https://doi.org/10.1145/3140568},
+doi = {10.1145/3140568},
+abstract = {Distributed protocols such as Paxos play an important role in many computer systems. Therefore, a bug in a distributed protocol may have tremendous effects. Accordingly, a lot of effort has been invested in verifying such protocols. However, checking invariants of such protocols is undecidable and hard in practice, as it requires reasoning about an unbounded number of nodes and messages. Moreover, protocol actions and invariants involve both quantifier alternations and higher-order concepts such as set cardinalities and arithmetic. This paper makes a step towards automatic verification of such protocols. We aim at a technique that can verify correct protocols and identify bugs in incorrect protocols. To this end, we develop a methodology for deductive verification based on effectively propositional logic (EPR)—a decidable fragment of first-order logic (also known as the Bernays-Sch\"{o}nfinkel-Ramsey class). In addition to decidability, EPR also enjoys the finite model property, allowing to display violations as finite structures which are intuitive for users. Our methodology involves modeling protocols using general (uninterpreted) first-order logic, and then systematically transforming the model to obtain a model and an inductive invariant that are decidable to check. The steps of the transformations are also mechanically checked, ensuring the soundness of the method. We have used our methodology to verify the safety of Paxos, and several of its variants, including Multi-Paxos, Vertical Paxos, Fast Paxos, Flexible Paxos and Stoppable Paxos. To the best of our knowledge, this work is the first to verify these protocols using a decidable logic, and the first formal verification of Vertical Paxos, Fast Paxos and Stoppable Paxos.},
+journal = {Proc. ACM Program. Lang.},
+month = {Oct},
+articleno = {108},
+numpages = {31},
+keywords = {Paxos, effectively propositional logic, safety verification, distributed systems, inductive invariants, deductive verification}
+}
+@inproceedings{2020cockroachdb,
+author = {Taft, Rebecca and Sharif, Irfan and Matei, Andrei and VanBenschoten, Nathan and Lewis, Jordan and Grieger, Tobias and Niemi, Kai and Woods, Andy and Birzin, Anne and Poss, Raphael and Bardea, Paul and Ranade, Amruta and Darnell, Ben and Gruneir, Bram and Jaffray, Justin and Zhang, Lucy and Mattis, Peter},
+title = {{CockroachDB: The Resilient Geo-Distributed SQL Database}},
+year = {2020},
+isbn = {9781450367356},
+publisher = {Association for Computing Machinery},
+url = {https://doi.org/10.1145/3318464.3386134},
+doi = {10.1145/3318464.3386134},
+abstract = {We live in an increasingly interconnected world, with many organizations operating across countries or even continents. To serve their global user base, organizations are replacing their legacy DBMSs with cloud-based systems capable of scaling OLTP workloads to millions of users. CockroachDB is a scalable SQL DBMS that was built from the ground up to support these global OLTP workloads while maintaining high availability and strong consistency. Just like its namesake, CockroachDB is resilient to disasters through replication and automatic recovery mechanisms. This paper presents the design of CockroachDB and its novel transaction model that supports consistent geo-distributed transactions on commodity hardware. We describe how CockroachDB replicates and distributes data to achieve fault tolerance and high performance, as well as how its distributed SQL layer automatically scales with the size of the database cluster while providing the standard SQL interface that users expect. Finally, we present a comprehensive performance evaluation and share a couple of case studies of CockroachDB users. We conclude by describing lessons learned while building CockroachDB over the last five years.},
+booktitle = {Proceedings of the 2020 ACM SIGMOD International Conference on Management of Data},
+pages = {1493–1509},
+numpages = {17},
+location = {Portland, OR, USA},
+series = {SIGMOD '20}
+}
+@inproceedings{2021awsfms3,
+author = {Bornholt, James and Joshi, Rajeev and Astrauskas, Vytautas and Cully, Brendan and Kragl, Bernhard and Markle, Seth and Sauri, Kyle and Schleit, Drew and Slatton, Grant and Tasiran, Serdar and Van Geffen, Jacob and Warfield, Andrew},
+title = {{Using Lightweight Formal Methods to Validate a Key-Value Storage Node in Amazon S3}},
+year = {2021},
+isbn = {9781450387095},
+publisher = {Association for Computing Machinery},
+url = {https://doi.org/10.1145/3477132.3483540},
+doi = {10.1145/3477132.3483540},
+abstract = {This paper reports our experience applying lightweight formal methods to validate the correctness of ShardStore, a new key-value storage node implementation for the Amazon S3 cloud object storage service. By "lightweight formal methods" we mean a pragmatic approach to verifying the correctness of a production storage node that is under ongoing feature development by a full-time engineering team. We do not aim to achieve full formal verification, but instead emphasize automation, usability, and the ability to continually ensure correctness as both software and its specification evolve over time. Our approach decomposes correctness into independent properties, each checked by the most appropriate tool, and develops executable reference models as specifications to be checked against the implementation. Our work has prevented 16 issues from reaching production, including subtle crash consistency and concurrency problems, and has been extended by non-formal-methods experts to check new features and properties as ShardStore has evolved.},
+booktitle = {Proceedings of the ACM SIGOPS 28th Symposium on Operating Systems Principles},
+pages = {836–850},
+numpages = {15},
+keywords = {cloud storage, lightweight formal methods},
+location = {Virtual Event, Germany},
+series = {SOSP '21}
+}
+@inproceedings{paxosmadelive,
+author = {Chandra, Tushar D. and Griesemer, Robert and Redstone, Joshua},
+title = {Paxos Made Live: An Engineering Perspective},
+year = {2007},
+isbn = {9781595936165},
+publisher = {Association for Computing Machinery},
+url = {https://doi.org/10.1145/1281100.1281103},
+doi = {10.1145/1281100.1281103},
+abstract = {We describe our experience in building a fault-tolerant data-base using the Paxos consensus algorithm. Despite the existing literature in the field, building such a database proved to be non-trivial. We describe selected algorithmic and engineering problems encountered, and the solutions we found for them. Our measurements indicate that we have built a competitive system.},
+booktitle = {Proceedings of the Twenty-Sixth Annual ACM Symposium on Principles of Distributed Computing},
+pages = {398–407},
+numpages = {10},
+keywords = {implementation, fault-tolerance, experiences, Paxos},
+location = {Portland, Oregon, USA},
+series = {PODC '07}
+}
+@inproceedings{biereBMC,
+author = {Biere, Armin and Cimatti, Alessandro and Clarke, Edmund and Strichman, Ofer and Zhu, Yunshan},
+year = {2003},
+month = {12},
+pages = {117 - 148},
+title = {{Bounded Model Checking}},
+volume = {58},
+isbn = {9780120121588},
+journal = {Advances in Computers},
+doi = {10.1016/S0065-2458(03)58003-2}
+}
+@article{holzmann1997model,
+  title={{The model checker SPIN}},
+  author={Holzmann, Gerard J.},
+  journal={IEEE Transactions on software engineering},
+  volume={23},
+  number={5},
+  pages={279--295},
+  year={1997},
+  publisher={IEEE}
+}
+@InProceedings{aronsparamver,
+author="Arons, Tamarah
+and Pnueli, Amir
+and Ruah, Sitvanit
+and Xu, Ying
+and Zuck, Lenore",
+editor="Berry, G{\'e}rard
+and Comon, Hubert
+and Finkel, Alain",
+title={{Parameterized Verification with Automatically Computed Inductive Assertions?}},
+booktitle="Computer Aided Verification",
+year="2001",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="221--234",
+abstract="The paper presents a method, called the method of verification by invisible invariants, for the automatic verification of a large class of parameterized systems. The method is based on the automatic calculation of candidate inductive assertions and checking for their inductiveness, using symbolic model-checking techniques for both tasks. First, we show how to use model-checking techniques over finite (and small) instances of the parameterized system in order to derive candidates for invariant assertions. Next, we show that the premises of the standard deductive INV rule for proving invariance properties can be automatically resolved by finite-state (BDD-based) methods with no need for interactive theorem proving. Combining the automatic computation of invariants with the automatic resolution of the VCs (verification conditions) yields a (necessarily) incomplete but fully automatic sound method for verifying large classes of parameterized systems. The generated invariants can be transferred to the VC-validation phase without ever been examined by the user, which explains why we refer to them as ``invisible''. The efficacy of the method is demonstrated by automatic verification of diverse parameterized systems in a fully automatic and efficient manner.",
+isbn="978-3-540-44585-2"
+}
+@inproceedings{Ma2019,
+abstract = {Designing and implementing distributed systems correctly is a very challenging task. Recently, formal verification has been successfully used to prove the correctness of distributed systems. At the heart of formal verification lies a computer-checked proof with an inductive invariant. Finding this inductive invariant, however, is the most difficult part of the proof. Alas, current proof techniques require inductive invariants to be found manually—and painstakingly—by the developer. In this paper, we present a new approach, Incremental Inference of Inductive Invariants (I4), to automatically generate inductive invariants for distributed protocols. The essence of our idea is simple: the inductive invariant of a finite instance of the protocol can be used to infer a general inductive invariant for the infinite distributed protocol. In I4, we create a finite instance of the protocol; use a model checking tool to automatically derive the inductive invariant for this finite instance; and generalize this invariant to an inductive invariant for the infinite protocol. Our experiments show that I4 can prove the correctness of several distributed protocols like Chord, 2PC and Transaction Chains with little to no human effort.},
+author = {Ma, Haojun and Goel, Aman and Jeannin, Jean Baptiste and Kapritsos, Manos and Kasikci, Baris and Sakallah, Karem A.},
+booktitle = {SOSP 2019 - Proceedings of the 27th ACM Symposium on Operating Systems Principles},
+doi = {10.1145/3341301.3359651},
+isbn = {9781450368735},
+title = {{I4: Incremental Inference of Inductive Invariants for Verification of Distributed Protocols}},
+year = {2019}
+}
+@inproceedings{raftpaper,
+abstract = {Raft is a consensus algorithm for managing a replicated log. It produces a result equivalent to (multi-)Paxos, and it is as efficient as Paxos, but its structure is different from Paxos; this makes Raft more understandable than Paxos and also provides a better foundation for building practical systems. In order to enhance understandability, Raft separates the key elements of consensus, such as leader election, log replication, and safety, and it enforces a stronger degree of coherency to reduce the number of states that must be considered. Results from a user study demonstrate that Raft is easier for students to learn than Paxos. Raft also includes a new mechanism for changing the cluster membership, which uses overlapping majorities to guarantee safety.},
+address = {USA},
+author = {Ongaro, Diego and Ousterhout, John},
+booktitle = {Proceedings of the 2014 USENIX Conference on USENIX Annual Technical Conference},
+isbn = {9781931971102},
+keywords = {Distributed Systems},
+mendeley-tags = {Distributed Systems},
+pages = {305--320},
+publisher = {USENIX Association},
+series = {USENIX ATC'14},
+title = {{In Search of an Understandable Consensus Algorithm}},
+year = {2014}
+}
+@InProceedings{clarke94finitestateverification,
+author="Clarke, E.
+and Grumberg, O.
+and Long, D.",
+editor="de Bakker, J. W.
+and de Roever, W. -P.
+and Rozenberg, G.",
+title="Verification tools for finite-state concurrent systems",
+booktitle="A Decade of Concurrency Reflections and Perspectives",
+year="1994",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="124--175",
+isbn="978-3-540-48423-3"
+}
+@article{bloem2015decidability,
+  title={{Decidability of Parameterized Verification}},
+  author={Bloem, Roderick and Jacobs, Swen and Khalimov, Ayrat and Konnov, Igor and Rubin, Sasha and Veith, Helmut and Widder, Josef},
+  journal={Synthesis Lectures on Distributed Computing Theory},
+  volume={6},
+  number={1},
+  pages={1--170},
+  year={2015},
+  publisher={Morgan \& Claypool Publishers}
+}
+@article{Goel2021TowardsAA,
+  title={{Towards an Automatic Proof of Lamport’s Paxos}},
+  author={Aman Goel and Karem A. Sakallah},
+  journal={2021 Formal Methods in Computer Aided Design (FMCAD)},
+  year={2021},
+  pages={112-122}
+}
+@book{softwareabstractions,
+  author    = {Daniel Jackson},
+  title     = {Software Abstractions - Logic, Language, and Analysis},
+  publisher = {MIT Press},
+  year      = {2006},
+  isbn      = {978-0-262-10114-1},
+  pages     = {I-XVI, 1-350},
+}
+@InProceedings{schultz2021design,
+  author =	{Schultz, William and Zhou, Siyuan and Dardik, Ian and Tripakis, Stavros},
+  title =	{{Design and Analysis of a Logless Dynamic Reconfiguration Protocol}},
+  booktitle =	{25th International Conference on Principles of Distributed Systems (OPODIS 2021)},
+  pages =	{26:1--26:16},
+  series =	{Leibniz International Proceedings in Informatics (LIPIcs)},
+  ISBN =	{978-3-95977-219-8},
+  ISSN =	{1868-8969},
+  year =	{2022},
+  volume =	{217},
+  editor =	{Bramas, Quentin and Gramoli, Vincent and Milani, Alessia},
+  publisher =	{Schloss Dagstuhl -- Leibniz-Zentrum f{\"u}r Informatik},
+  address =	{Dagstuhl, Germany},
+  URL =		{https://drops.dagstuhl.de/opus/volltexte/2022/15801},
+  URN =		{urn:nbn:de:0030-drops-158016},
+  doi =		{10.4230/LIPIcs.OPODIS.2021.26},
+  annote =	{Keywords: Fault Tolerance, Dynamic Reconfiguration, State Machine Replication}
+}
+@inproceedings{schultz2021formal,
+author = {Schultz, William and Dardik, Ian and Tripakis, Stavros},
+title = {{Formal Verification of a Distributed Dynamic Reconfiguration Protocol}},
+year = {2022},
+isbn = {9781450391825},
+publisher = {Association for Computing Machinery},
+address = {Philadelphia, PA, USA},
+url = {https://doi.org/10.1145/3497775.3503688},
+doi = {10.1145/3497775.3503688},
+abstract = {We present a formal, machine checked TLA+ safety proof of MongoRaftReconfig, a distributed dynamic reconfiguration protocol. MongoRaftReconfig was designed for and implemented in MongoDB, a distributed database whose replication protocol is derived from the Raft consensus algorithm. We present an inductive invariant for MongoRaftReconfig that is formalized in TLA+ and formally proved using the TLA+ proof system (TLAPS). We also present a formal TLAPS proof of two key safety properties of MongoRaftReconfig, LeaderCompleteness and StateMachineSafety. To our knowledge, these are the first machine checked inductive invariant and safety proof of a dynamic reconfiguration protocol for a Raft based replication system.},
+booktitle = {Proceedings of the 11th ACM SIGPLAN International Conference on Certified Programs and Proofs},
+pages = {143–152},
+numpages = {10},
+keywords = {Dynamic Reconfiguration, Distributed Systems, Theorem Proving, Raft, TLA+, Formal Verification},
+location = {Philadelphia, PA, USA},
+series = {CPP 2022}
+}
+@inproceedings{pastryformalverif,
+author = {Lu, Tianxiang},
+title = {{Formal Verification of the Pastry Protocol Using TLA+}},
+year = {2015},
+isbn = {9783319259413},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+url = {https://doi.org/10.1007/978-3-319-25942-0_19},
+doi = {10.1007/978-3-319-25942-0_19},
+booktitle = {Proceedings of the First International Symposium on Dependable Software Engineering: Theories, Tools, and Applications - Volume 9409},
+pages = {284–299},
+numpages = {16},
+keywords = {Network protocols, Formal verification, Interactive theorem proving},
+location = {Nanjing, China},
+series = {SETTA 2015}
+}
+@inproceedings{clarke2000counterexample,
+  title={Counterexample-guided abstraction refinement},
+  author={Clarke, Edmund and Grumberg, Orna and Jha, Somesh and Lu, Yuan and Veith, Helmut},
+  booktitle={International Conference on Computer Aided Verification},
+  pages={154--169},
+  year={2000},
+  organization={Springer}
+}
+@InProceedings{Fedyukovichsyguinvs,
+author="Fedyukovich, Grigory
+and Prabhu, Sumanth
+and Madhukar, Kumar
+and Gupta, Aarti",
+editor="Dillig, Isil
+and Tasiran, Serdar",
+title="{Quantified Invariants via Syntax-Guided Synthesis}",
+booktitle="Computer Aided Verification",
+year="2019",
+publisher="Springer International Publishing",
+address="Cham",
+pages="259--277",
+abstract="Programs with arrays are ubiquitous. Automated reasoning about arrays necessitates discovering properties about ranges of elements at certain program points. Such properties are formally specified by universally quantified formulas, which are difficult to find, and difficult to prove inductive. In this paper, we propose an algorithm based on an enumerative search that discovers quantified invariants in stages. First, by exploiting the program syntax, it identifies ranges of elements accessed in each loop. Second, it identifies potentially useful facts about individual elements and generalizes them to hypotheses about entire ranges. Finally, by applying recent advances of SMT solving, the algorithm filters out wrong hypotheses. The combination of properties is often enough to prove that the program meets a safety specification. The algorithm has been implemented in a solver for Constrained Horn Clauses, Freq-Horn, and extended to deal with multiple (possibly nested) loops. We show that FreqHorn advances state-of-the-art on a wide range of public array-handling programs.",
+isbn="978-3-030-25540-4"
+}
+@inproceedings{houdiniflanagan,
+author = {Flanagan, Cormac and Leino, K. Rustan M.},
+title = {{Houdini, an Annotation Assistant for ESC/Java}},
+year = {2001},
+isbn = {3540417915},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+booktitle = {Proceedings of the International Symposium of Formal Methods Europe on Formal Methods for Increasing Software Productivity},
+pages = {500–517},
+numpages = {18},
+series = {FME '01}
+}
+@article{chib1995understanding,
+  title={Understanding the metropolis-hastings algorithm},
+  author={Chib, Siddhartha and Greenberg, Edward},
+  journal={The american statistician},
+  volume={49},
+  number={4},
+  pages={327--335},
+  year={1995},
+  publisher={Taylor \& Francis}
+}
+@InProceedings{2020formalspec_tendermint,
+  author =	{Sean Braithwaite and Ethan Buchman and Igor Konnov and Zarko Milosevic and Ilina Stoilkovska and Josef Widder and Anca Zamfir},
+  title =	{{Formal Specification and Model Checking of the Tendermint Blockchain Synchronization Protocol (Short Paper)}},
+  booktitle =	{2nd Workshop on Formal Methods for Blockchains (FMBC 2020)},
+  pages =	{10:1--10:8},
+  series =	{OpenAccess Series in Informatics (OASIcs)},
+  ISBN =	{978-3-95977-169-6},
+  ISSN =	{2190-6807},
+  year =	{2020},
+  volume =	{84},
+  editor =	{Bruno Bernardo and Diego Marmsoler},
+  publisher =	{Schloss Dagstuhl--Leibniz-Zentrum f{\"u}r Informatik},
+  address =	{Dagstuhl, Germany},
+  URL =		{https://drops.dagstuhl.de/opus/volltexte/2020/13423},
+  URN =		{urn:nbn:de:0030-drops-134238},
+  doi =		{10.4230/OASIcs.FMBC.2020.10},
+  annote =	{Keywords: Blockchain, Fault Tolerance, Byzantine Faults, Model Checking}
+}
+@inproceedings{2011pdr,
+author = {Een, Niklas and Mishchenko, Alan and Brayton, Robert},
+title = {Efficient Implementation of Property Directed Reachability},
+year = {2011},
+isbn = {9780983567813},
+publisher = {FMCAD Inc},
+address = {Austin, Texas},
+abstract = {Last spring, in March 2010, Aaron Bradley published the first truly new bit-level symbolic model checking algorithm since Ken McMillan's interpolation based model checking procedure introduced in 2003. Our experience with the algorithm suggests that it is stronger than interpolation on industrial problems, and that it is an important algorithm to study further. In this paper, we present a simplified and faster implementation of Bradley's procedure, and discuss our successful and unsuccessful attempts to improve it.},
+booktitle = {Proceedings of the International Conference on Formal Methods in Computer-Aided Design},
+pages = {125–134},
+numpages = {10},
+location = {Austin, Texas},
+series = {FMCAD '11}
+}
+@inproceedings{2018efficientSATSampling,
+author = {Dutra, Rafael and Laeufer, Kevin and Bachrach, Jonathan and Sen, Koushik},
+title = {{Efficient Sampling of SAT Solutions for Testing}},
+year = {2018},
+isbn = {9781450356381},
+publisher = {Association for Computing Machinery},
+url = {https://doi.org/10.1145/3180155.3180248},
+doi = {10.1145/3180155.3180248},
+abstract = {In software and hardware testing, generating multiple inputs which satisfy a given set of constraints is an important problem with applications in fuzz testing and stimulus generation. However, it is a challenge to perform the sampling efficiently, while generating a diverse set of inputs which satisfy the constraints. We developed a new algorithm QuickSampler which requires a small number of solver calls to produce millions of samples which satisfy the constraints with high probability. We evaluate QuickSampler on large real-world benchmarks and show that it can produce unique valid solutions orders of magnitude faster than other state-of-the-art sampling tools, with a distribution which is reasonably close to uniform in practice.},
+booktitle = {Proceedings of the 40th International Conference on Software Engineering},
+pages = {549–559},
+numpages = {11},
+keywords = {sampling, constraint-based testing, constrained-random verification, stimulus generation},
+location = {Gothenburg, Sweden},
+series = {ICSE '18}
+}
+@article{1979Chvatalgreedysetcover,
+author = {Chvatal, V.},
+title = {A Greedy Heuristic for the Set-Covering Problem},
+year = {1979},
+issue_date = {August 1979},
+publisher = {INFORMS},
+address = {Linthicum, MD, USA},
+volume = {4},
+number = {3},
+issn = {0364-765X},
+url = {https://doi.org/10.1287/moor.4.3.233},
+doi = {10.1287/moor.4.3.233},
+abstract = {Let A be a binary matrix of size m \texttimes{} n, let cT be a positive row vector of length n and let e be the column vector, all of whose m components are ones. The set-covering problem is to minimize cTx subject to Ax ≥ e and x binary. We compare the value of the objective function at a feasible solution found by a simple greedy heuristic to the true optimum. It turns out that the ratio between the two grows at most logarithmically in the largest column sum of A. When all the components of cT are the same, our result reduces to a theorem established previously by Johnson and Lovasz.},
+journal = {Math. Oper. Res.},
+month = {aug},
+pages = {233–235},
+numpages = {3},
+keywords = {evaluation of greedy heuristic, set covering, integer programming}
+}
+@book{clrsthirded,
+  author    = {Thomas H. Cormen and
+               Charles E. Leiserson and
+               Ronald L. Rivest and
+               Clifford Stein},
+  title     = {Introduction to Algorithms, 3rd Edition},
+  publisher = {{MIT} Press},
+  year      = {2009},
+  url       = {http://mitpress.mit.edu/books/introduction-algorithms},
+  isbn      = {978-0-262-03384-8},
+  timestamp = {Mon, 17 Aug 2020 11:36:12 +0200},
+  biburl    = {https://dblp.org/rec/books/daglib/0023376.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+@Inbook{Karp1972,
+author="Karp, Richard M.",
+editor="Miller, Raymond E.
+and Thatcher, James W.
+and Bohlinger, Jean D.",
+title="Reducibility among Combinatorial Problems",
+bookTitle="Complexity of Computer Computations: Proceedings of a symposium on the Complexity of Computer Computations, held March 20--22, 1972, at the IBM Thomas J. Watson Research Center, Yorktown Heights, New York, and sponsored by the Office of Naval Research, Mathematics Program, IBM World Trade Corporation, and the IBM Research Mathematical Sciences Department",
+year="1972",
+publisher="Springer US",
+address="Boston, MA",
+pages="85--103",
+isbn="978-1-4684-2001-2",
+doi="10.1007/978-1-4684-2001-2_9",
+url="https://doi.org/10.1007/978-1-4684-2001-2_9"
+}
+@inproceedings{wilcox2015verdi,
+  author    = {James R. Wilcox and
+               Doug Woos and
+               Pavel Panchekha and
+               Zachary Tatlock and
+               Xi Wang and
+               Michael D. Ernst and
+               Thomas E. Anderson},
+  editor    = {David Grove and
+               Stephen M. Blackburn},
+  title     = {{Verdi: a framework for implementing and formally verifying distributed
+               systems}},
+  booktitle = {Proceedings of the 36th {ACM} {SIGPLAN} Conference on Programming
+               Language Design and Implementation, Portland, OR, USA, June 15-17,
+               2015},
+  pages     = {357--368},
+  publisher = {{ACM}},
+  year      = {2015},
+  url       = {https://doi.org/10.1145/2737924.2737958},
+  doi       = {10.1145/2737924.2737958},
+  timestamp = {Wed, 23 Jun 2021 16:58:51 +0200},
+  biburl    = {https://dblp.org/rec/conf/pldi/WilcoxWPTWEA15.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+@article{2019tlamadesymbolic,
+author = {Konnov, Igor and Kukovec, Jure and Tran, Thanh-Hai},
+title = {{TLA+ Model Checking Made Symbolic}},
+year = {2019},
+issue_date = {October 2019},
+publisher = {Association for Computing Machinery},
+volume = {3},
+number = {OOPSLA},
+url = {https://doi.org/10.1145/3360549},
+doi = {10.1145/3360549},
+abstract = {TLA+ is a language for formal specification of all kinds of computer systems. System designers use this language to specify concurrent, distributed, and fault-tolerant protocols, which are traditionally presented in pseudo-code. TLA+ is extremely concise yet expressive: The language primitives include Booleans, integers, functions, tuples, records, sequences, and sets thereof, which can be also nested. This is probably why the only model checker for TLA+ (called TLC) relies on explicit enumeration of values and states.  In this paper, we present APALACHE -- a first symbolic model checker for TLA+. Like TLC, it assumes that all specification parameters are fixed and all states are finite structures. Unlike TLC, APALACHE translates the underlying transition relation into quantifier-free SMT constraints, which allows us to exploit the power of SMT solvers. Designing this translation is the central challenge that we address in this paper. Our experiments show that APALACHE outperforms TLC on examples with large state spaces.},
+journal = {Proc. ACM Program. Lang.},
+month = {Oct},
+articleno = {123},
+numpages = {30},
+keywords = {Model checking, SMT, TLA+}
+}
+@article{Bradley2007CheckingSB,
+  title={{Checking Safety by Inductive Generalization of Counterexamples to Induction}},
+  author={Aaron R. Bradley and Zohar Manna},
+  journal={Formal Methods in Computer Aided Design (FMCAD'07)},
+  year={2007},
+  pages={173-180}
+}
+@inproceedings{2020firstorderquantified,
+author = {Koenig, Jason R. and Padon, Oded and Immerman, Neil and Aiken, Alex},
+title = {{First-Order Quantified Separators}},
+year = {2020},
+isbn = {9781450376136},
+publisher = {Association for Computing Machinery},
+url = {https://doi.org/10.1145/3385412.3386018},
+doi = {10.1145/3385412.3386018},
+abstract = {Quantified first-order formulas, often with quantifier alternations, are increasingly used in the verification of complex systems. While automated theorem provers for first-order logic are becoming more robust, invariant inference tools that handle quantifiers are currently restricted to purely universal formulas. We define and analyze first-order quantified separators and their application to inferring quantified invariants with alternations. A separator for a given set of positively and negatively labeled structures is a formula that is true on positive structures and false on negative structures. We investigate the problem of finding a separator from the class of formulas in prenex normal form with a bounded number of quantifiers and show this problem is NP-complete by reduction to and from SAT. We also give a practical separation algorithm, which we use to demonstrate the first invariant inference procedure able to infer invariants with quantifier alternations.},
+booktitle = {Proceedings of the 41st ACM SIGPLAN Conference on Programming Language Design and Implementation},
+pages = {703–717},
+numpages = {15},
+keywords = {first-order logic, invariant inference},
+location = {London, UK},
+series = {PLDI 2020}
+}
+@InProceedings{2018accelsynsyninvs,
+author="Fedyukovich, Grigory
+and Bod{\'i}k, Rastislav",
+editor="Beyer, Dirk
+and Huisman, Marieke",
+title={{Accelerating Syntax-Guided Invariant Synthesis}},
+booktitle="Tools and Algorithms for the Construction and Analysis of Systems",
+year="2018",
+publisher="Springer International Publishing",
+address="Cham",
+pages="251--269",
+abstract="We present a fast algorithm for syntax-guided synthesis of inductive invariants which combines enumerative learning with inductive-subset extraction, leverages counterexamples-to-induction and interpolation-based bounded proofs. It is a variant of a recently proposed probabilistic method, called FreqHorn, which is however less dependent on heuristics than its predecessor. We present an evaluation of the new algorithm on a large set of benchmarks and show that it exhibits a more predictable behavior than its predecessor, and it is competitive to the state-of-the-art invariant synthesizers based on Property Directed Reachability.",
+isbn="978-3-319-89960-2"
+}
+@mastersthesis{kuppe2017verified,
+  title={{A Verified and Scalable Hash Table for the TLC Model Checker: Towards an Order of Magnitude Speedup}},
+  author={Kuppe, Markus A},
+  year={2017},
+  school={University of Hamburg.}
+}
+@misc{mypyvyTool,
+title = {mypyvy tool, Github repository},
+year = {2022},
+howpublished = {\url{https://github.com/wilcoxjay/mypyvy}},
+doi = {10.1145/3385412.3386018},
+abstract = {Quantified first-order formulas, often with quantifier alternations, are increasingly used in the verification of complex systems. While automated theorem provers for first-order logic are becoming more robust, invariant inference tools that handle quantifiers are currently restricted to purely universal formulas. We define and analyze first-order quantified separators and their application to inferring quantified invariants with alternations. A separator for a given set of positively and negatively labeled structures is a formula that is true on positive structures and false on negative structures. We investigate the problem of finding a separator from the class of formulas in prenex normal form with a bounded number of quantifiers and show this problem is NP-complete by reduction to and from SAT. We also give a practical separation algorithm, which we use to demonstrate the first invariant inference procedure able to infer invariants with quantifier alternations.},
+booktitle = {Proceedings of the 41st ACM SIGPLAN Conference on Programming Language Design and Implementation},
+pages = {703–717},
+numpages = {15},
+keywords = {first-order logic, invariant inference},
+location = {London, UK},
+series = {PLDI 2020}
+}
+@book{sipser2015,
+author = {Sipser, Michael},
+title = {Introduction to the Theory of Computation},
+year = {1996},
+isbn = {053494728X},
+publisher = {International Thomson Publishing},
+edition = {1st},
+abstract = {From the Publisher:Michael Sipser's philosophy in writing this book is simple: make the subject interesting and relevant, and the students will learn. His emphasis on unifying computer science theory - rather than offering a collection of low-level details - sets the book apart, as do his intuitive explanations. Throughout the book, Sipser - a noted authority on the theory of computation - builds students' knowledge of conceptual tools used in computer science, the aesthetic sense they need to create elegant systems, and the ability to think through problems on their own. INTRODUCTION TO THE THEORY OF COMPUTATION provides a mathematical treatment of computation theory grounded in theorems and proofs. Proofs are presented with a "proof idea" component to reveal the concepts underpinning the formalism. Algorithms are presented using prose instead of pseudocode to focus attention on the algorithms themselves, rather than on specific computational models. Topic coverage, terminology, and order of presentation are traditional for an upper-level course in computer science theory. Users of the Preliminary Edition (now out of print) will be interested to note several new chapters on complexity theory: Chapter 8 on space complexity; Chapter 9 on provable intractability, and Chapter 10 on advanced topics, including approximation algorithms, alternation, interactive proof systems, cryptography, and parallel computing.}
+}
+@book{2021Ebbinghaus,
+abstract = {This textbook introduces first-order logic and its role in the foundations of mathematics by examining fundamental questions. What is a mathematical proof? How can mathematical proofs be justified? Are there limitations to provability? To what extent can machines carry out mathematical proofs? In answering these questions, this textbook explores the capabilities and limitations of algorithms and proof methods in mathematics and computer science. The chapters are carefully organized, featuring complete proofs and numerous examples throughout. Beginning with motivating examples, the book goes on to present the syntax and semantics of first-order logic. After providing a sequent calculus for this logic, a Henkin-type proof of the completeness theorem is given. These introductory chapters prepare the reader for the advanced topics that follow, such as Gödel's Incompleteness Theorems, Trakhtenbrot's undecidability theorem, Lindström's theorems on the maximality of first-order logic, and results linking logic with automata theory. This new edition features many modernizations, as well as two additional important results: The decidability of Presburger arithmetic, and the decidability of the weak monadic theory of the successor function. Mathematical Logic is ideal for students beginning their studies in logic and the foundations of mathematics. Although the primary audience for this textbook will be graduate students or advanced undergraduates in mathematics or computer science, in fact the book has few formal prerequisites. It demands of the reader only mathematical maturity and experience with basic abstract structures, such as those encountered in discrete mathematics or algebra.},
+author = {Ebbinghaus, Heinz-Dieter},
+address = {Cham, Switzerland},
+edition = {Third edition.},
+isbn = {9783030738396},
+keywords = {Logic, Symbolic and mathematical},
+language = {eng},
+publisher = {Springer},
+series = {Graduate texts in mathematics},
+title = {Mathematical logic},
+year = {2021},
+}
+@inbook{2021benari,
+author = {Ben-Ari, M.},
+address = {London},
+edition = {3rd ed.},
+isbn = {9781447141297},
+keywords = {Logic, Symbolic and mathematical},
+language = {eng},
+publisher = {Springer},
+title = {Mathematical logic for computer science},
+year = {2012},
+chapter={7},
+}
+@inproceedings{Dreben1979TheDP,
+  title={The decision problem: Solvable classes of quantificational formulas},
+  author={Burton Dreben and Warren D. Goldfarb},
+  year={1979}
+}
+@article{lewis1980complexity,
+  title={{Complexity results for classes of quantificational formulas}},
+  author={Lewis, Harry R},
+  journal={Journal of Computer and System Sciences},
+  volume={21},
+  number={3},
+  pages={317--353},
+  year={1980},
+  publisher={Elsevier}
+}
+@techreport{demoura2008deciding,
+author = {de Moura, Leonardo and Piskac, Ruzica and Bjørner, Nikolaj},
+title = {{Deciding Effectively Propositional Logic using DPLL and Substitution Sets}},
+year = {2008},
+month = {August},
+abstract = {We introduce a DPLL calculus that is a decision procedure for the Bernays-Schoenfinkel class, also known as EPR. Our calculus allows combining techniques for efficient propositional search with data-structures, such as Binary Decision Diagrams, that can efficiently and succinctly encode finite sets of substitutions and operations on these. In the calculus, clauses comprise of a sequence of literals together with a finite set of substitutions; truth assignments are also represented using substitution sets. The calculus works directly at the level of sets, and admits performing simultaneous constraint propagation and decisions, resulting in potentially exponential speedups over existing approaches.},
+publisher = {Springer-Verlag},
+url = {https://www.microsoft.com/en-us/research/publication/deciding-effectively-propositional-logic-using-dpll-and-substitution-sets/},
+pages = {21},
+number = {MSR-TR-2008-104},
+}
+@InProceedings{2016merzmanysorted,
+author="Merz, Stephan
+and Vanzetto, Hern{\'a}n",
+editor="Butler, Michael
+and Schewe, Klaus-Dieter
+and Mashkoor, Atif
+and Biro, Miklos",
+title={{Encoding TLA+ into Many-Sorted First-Order Logic}},
+booktitle="Abstract State Machines, Alloy, B, TLA, VDM, and Z",
+year="2016",
+publisher="Springer International Publishing",
+address="Cham",
+pages="54--69",
+isbn="978-3-319-33600-8"
+}
+@InProceedings{2007decidablefragmentsmanysorted,
+author="Abadi, Aharon
+and Rabinovich, Alexander
+and Sagiv, Mooly",
+editor="Dershowitz, Nachum
+and Voronkov, Andrei",
+title="Decidable Fragments of Many-Sorted Logic",
+booktitle="Logic for Programming, Artificial Intelligence, and Reasoning",
+year="2007",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="17--31",
+abstract="We investigate the possibility of developing a decidable logic which allows expressing a large variety of real world specifications. The idea is to define a decidable subset of many-sorted (typed) first- order logic. The motivation is that types simplify the complexity of mixed quantifiers when they quantify over different types. We noticed that many real world verification problems can be formalized by quantifying over different types in such a way that the relations between types remain simple.",
+isbn="978-3-540-75560-9"
+}
+@InProceedings{2020ivymultimodal,
+author="McMillan, Kenneth L.
+and Padon, Oded",
+editor="Lahiri, Shuvendu K.
+and Wang, Chao",
+title="Ivy: A Multi-modal Verification Tool for Distributed Algorithms",
+booktitle="Computer Aided Verification",
+year="2020",
+publisher="Springer International Publishing",
+address="Cham",
+pages="190--202",
+abstract="Ivy is a multi-modal verification tool for correct design and implementation of distributed protocols and algorithms, supporting modular specification, implementation and proof. Ivy supports proving safety and liveness properties of parameterized and infinite-state systems via three modes: deductive verification using an SMT solver, abstraction and model checking, and manual proofs using natural deduction. It supports light-weight formal methods via compositional specification-based testing and bounded model checking. Ivy can extract executable distributed programs by translation to efficient C++ code. It is designed to support decidable automated reasoning, to improve proof stability and to provide transparency in the case of proof failures. For this purpose, it presents concrete finite counterexamples, automatically audits proofs for decidability of verification conditions, and provides modular hiding of theories.",
+isbn="978-3-030-53291-8"
+}
+@InProceedings{2009completeinstant,
+author="Ge, Yeting
+and de Moura, Leonardo",
+editor="Bouajjani, Ahmed
+and Maler, Oded",
+title="Complete Instantiation for Quantified Formulas in Satisfiabiliby Modulo Theories",
+booktitle="Computer Aided Verification",
+year="2009",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="306--320",
+abstract="Quantifier reasoning in Satisfiability Modulo Theories (SMT) is a long-standing challenge. The practical method employed in modern SMT solvers is to instantiate quantified formulas based on heuristics, which is not refutationally complete even for pure first-order logic. We present several decidable fragments of first order logic modulo theories. We show how to construct models for satisfiable formulas in these fragments. For richer undecidable fragments, we discuss conditions under which our procedure is refutationally complete. We also describe useful heuristics based on model checking for prioritizing or avoiding instantiations.",
+isbn="978-3-642-02658-4"
+}
+@misc{2014manysortedlogic,
+title="Many-sorted logic",
+author="Jouko Vaananen",
+year="2014",
+url={http://www.math.helsinki.fi/logic/opetus/msl/ILLC_MSL_2014.1.pdf},
+howpublished={\url{http://www.math.helsinki.fi/logic/opetus/msl/ILLC_MSL_2014.1.pdf}},
+}
+@article{1986kozen,
+author = {Apt, K R and Kozen, D C},
+title = {Limits for Automatic Verification of Finite-State Concurrent Systems},
+year = {1986},
+issue_date = {May 30,1986},
+publisher = {Elsevier North-Holland, Inc.},
+address = {USA},
+volume = {22},
+number = {6},
+issn = {0020-0190},
+url = {https://doi.org/10.1016/0020-0190(86)90071-2},
+doi = {10.1016/0020-0190(86)90071-2},
+journal = {Inf. Process. Lett.},
+month = {may},
+pages = {307–309},
+numpages = {3}
+}
+@article{1997clarkenetwork,
+author = {Clarke, E. M. and Grumberg, O. and Jha, S.},
+title = {Verifying Parameterized Networks},
+year = {1997},
+issue_date = {Sept. 1997},
+publisher = {Association for Computing Machinery},
+
+volume = {19},
+number = {5},
+issn = {0164-0925},
+url = {https://doi.org/10.1145/265943.265960},
+doi = {10.1145/265943.265960},
+abstract = {This article describes a technique based on network grammars and abstraction to verify families of state-transition systems. The family of state-transition systems is represented by a context-free network grammar. Using the structure of the network grammar our technique constructs a process invariant that simulates all the state-transition systems in the family. A novel idea introduced in this article is the use of regular languages to express state properties. We have implemented our techniques and verified two nontrivial examples.},
+journal = {ACM Trans. Program. Lang. Syst.},
+month = {sep},
+pages = {726–750},
+numpages = {25},
+keywords = {parameterized systems, temporal logic, model checking, process invariants}
+}
+@InProceedings{1999bierebmc,
+author="Biere, Armin
+and Cimatti, Alessandro
+and Clarke, Edmund
+and Zhu, Yunshan",
+editor="Cleaveland, W. Rance",
+title="Symbolic Model Checking without BDDs",
+booktitle="Tools and Algorithms for the Construction and Analysis of Systems",
+year="1999",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="193--207",
+isbn="978-3-540-49059-3"
+}
+@InProceedings{2003mcmillaninterp,
+author="McMillan, K. L.",
+editor="Hunt, Warren A.
+and Somenzi, Fabio",
+title="Interpolation and SAT-Based Model Checking",
+booktitle="Computer Aided Verification",
+year="2003",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="1--13",
+abstract="We consider a fully SAT-based method of unbounded symbolic model checking based on computing Craig interpolants. In benchmark studies using a set of large industrial circuit verification instances, this method is greatly more efficient than BDD-based symbolic model checking, and compares favorably to some recent SAT-based model checking methods on positive instances.",
+isbn="978-3-540-45069-6"
+}
+@inproceedings{alur2015automatic,
+  title={Automatic completion of distributed protocols with symmetry},
+  author={Alur, Rajeev and Raghothaman, Mukund and Stergiou, Christos and Tripakis, Stavros and Udupa, Abhishek},
+  booktitle={International Conference on Computer Aided Verification},
+  pages={395--412},
+  year={2015},
+  organization={Springer}
+}
+@inproceedings{katz2008model,
+  title={Model checking-based genetic programming with an application to mutual exclusion},
+  author={Katz, Gal and Peled, Doron},
+  booktitle={International Conference on Tools and Algorithms for the Construction and Analysis of Systems},
+  pages={141--156},
+  year={2008},
+  organization={Springer}
+}
+@inproceedings{katz2009synthesizing,
+  title={Synthesizing solutions to the leader election problem using model checking and genetic programming},
+  author={Katz, Gal and Peled, Doron},
+  booktitle={Haifa Verification Conference},
+  pages={117--132},
+  year={2009},
+  organization={Springer}
+}
+@article{alur2017automatic,
+  title={Automatic synthesis of distributed protocols},
+  author={Alur, Rajeev and Tripakis, Stavros},
+  journal={Acm Sigact News},
+  volume={48},
+  number={1},
+  pages={55--90},
+  year={2017},
+  publisher={ACM New York, NY, USA}
+}
+@article{1980dedsynmanna,
+author = {Manna, Zohar and Waldinger, Richard},
+title = {A Deductive Approach to Program Synthesis},
+year = {1980},
+issue_date = {Jan. 1980},
+publisher = {Association for Computing Machinery},
+
+volume = {2},
+number = {1},
+issn = {0164-0925},
+url = {https://doi.org/10.1145/357084.357090},
+doi = {10.1145/357084.357090},
+abstract = {Program synthesis is the systematic derivation of a program from a given specification. A deductive approach to program synthesis is presented for the construction of recursive programs. This approach regards program synthesis as a theorem-proving task and relies on a theorem-proving method that combines the features of transformation rules, unification, and mathematical induction within a single framework.},
+journal = {ACM Trans. Program. Lang. Syst.},
+month = {jan},
+pages = {90–121},
+numpages = {32}
+}
+@article{udupa2013transit,
+  title={TRANSIT: specifying protocols with concolic snippets},
+  author={Udupa, Abhishek and Raghavan, Arun and Deshmukh, Jyotirmoy V and Mador-Haim, Sela and Martin, Milo MK and Alur, Rajeev},
+  journal={ACM SIGPLAN Notices},
+  volume={48},
+  number={6},
+  pages={287--296},
+  year={2013},
+  publisher={ACM New York, NY, USA}
+}
+@inproceedings{elver2018verc3,
+  title={VerC3: A library for explicit state synthesis of concurrent systems},
+  author={Elver, Marco and Banks, Christopher J and Jackson, Paul and Nagarajan, Vijay},
+  booktitle={2018 Design, Automation \& Test in Europe Conference \& Exhibition (DATE)},
+  pages={1381--1386},
+  year={2018},
+  organization={IEEE}
+}
+@inproceedings{oki1988viewstamped,
+  title={Viewstamped replication: A new primary copy method to support highly-available distributed systems},
+  author={Oki, Brian M and Liskov, Barbara H},
+  booktitle={Proceedings of the seventh annual ACM Symposium on Principles of distributed computing},
+  pages={8--17},
+  year={1988}
+}
+@article{lamport2001paxos,
+  title={Paxos made simple},
+  author={Lamport, Leslie},
+  journal={ACM SIGACT News (Distributed Computing Column) 32, 4 (Whole Number 121, December 2001)},
+  pages={51--58},
+  year={2001}
+}
+@inproceedings{2019parallelspaxosraft,
+author = {Wang, Zhaoguo and Zhao, Changgeng and Mu, Shuai and Chen, Haibo and Li, Jinyang},
+title = {On the Parallels between Paxos and Raft, and How to Port Optimizations},
+year = {2019},
+isbn = {9781450362177},
+publisher = {Association for Computing Machinery},
+
+url = {https://doi.org/10.1145/3293611.3331595},
+doi = {10.1145/3293611.3331595},
+abstract = {In recent years, Raft has surpassed Paxos to become the more popular consensus protocol in the industry. While many researchers have observed the similarities between the two protocols, no one has shown how Raft and Paxos are formally related to each other. In this paper, we present a formal mapping between Raft and Paxos, and use this knowledge to port a certain class of optimizations from Paxos to Raft. In particular, our porting method can automatically generate an optimized protocol specification with guaranteed correctness. As case studies, we port and evaluate two optimizations, Mencius and Paxos Quorum Lease to Raft.},
+booktitle = {Proceedings of the 2019 ACM Symposium on Principles of Distributed Computing},
+pages = {445–454},
+numpages = {10},
+keywords = {optimization porting, paxos, raft},
+location = {Toronto ON, Canada},
+series = {PODC '19}
+}
+@article{howard2015raft,
+  title={Raft refloated: Do we have consensus?},
+  author={Howard, Heidi and Schwarzkopf, Malte and Madhavapeddy, Anil and Crowcroft, Jon},
+  journal={ACM SIGOPS Operating Systems Review},
+  volume={49},
+  number={1},
+  pages={12--21},
+  year={2015},
+  publisher={ACM New York, NY, USA}
+}
+@article{van2014vive,
+  title={Vive la diff{\'e}rence: Paxos vs. viewstamped replication vs. zab},
+  author={Van Renesse, Robbert and Schiper, Nicolas and Schneider, Fred B},
+  journal={IEEE Transactions on Dependable and Secure Computing},
+  volume={12},
+  number={4},
+  pages={472--484},
+  year={2014},
+  publisher={IEEE}
+}
+@inproceedings{junqueira2011zab,
+  title={Zab: High-performance broadcast for primary-backup systems},
+  author={Junqueira, Flavio P and Reed, Benjamin C and Serafini, Marco},
+  booktitle={2011 IEEE/IFIP 41st International Conference on Dependable Systems \& Networks (DSN)},
+  pages={245--256},
+  year={2011},
+  organization={IEEE}
+}
+@article{schneider1990implementing,
+  title={Implementing fault-tolerant services using the state machine approach: A tutorial},
+  author={Schneider, Fred B},
+  journal={ACM Computing Surveys (CSUR)},
+  volume={22},
+  number={4},
+  pages={299--319},
+  year={1990},
+  publisher={ACM New York, NY, USA}
+}
+@article{fischer1985impossibility,
+  title={Impossibility of distributed consensus with one faulty process},
+  author={Fischer, Michael J and Lynch, Nancy A and Paterson, Michael S},
+  journal={Journal of the ACM (JACM)},
+  volume={32},
+  number={2},
+  pages={374--382},
+  year={1985},
+  publisher={ACM New York, NY, USA}
+}
+@inproceedings{bar2003automatic,
+  title={Automatic discovery of mutual exclusion algorithms},
+  author={Bar-David, Yoah and Taubenfeld, Gadi},
+  booktitle={International Symposium on Distributed Computing},
+  pages={136--150},
+  year={2003},
+  organization={Springer}
+}
+@article{manna1984synthesis,
+  title={Synthesis of communicating processes from temporal logic specifications},
+  author={Manna, Zohar and Wolper, Pierre},
+  journal={ACM Transactions on Programming Languages and Systems (TOPLAS)},
+  volume={6},
+  number={1},
+  pages={68--93},
+  year={1984},
+  publisher={ACM New York, NY, USA}
+}
+@article{hoare1978communicating,
+  title={Communicating sequential processes},
+  author={Hoare, Charles Antony Richard},
+  journal={Communications of the ACM},
+  volume={21},
+  number={8},
+  pages={666--677},
+  year={1978},
+  publisher={ACM New York, NY, USA}
+}
+@inproceedings{abadi1989realizable,
+  title={Realizable and unrealizable specifications of reactive systems},
+  author={Abadi, Martin and Lamport, Leslie and Wolper, Pierre},
+  booktitle={International Colloquium on Automata, Languages, and Programming},
+  pages={1--17},
+  year={1989},
+  organization={Springer}
+}
+@inproceedings{meyer2018strix,
+  title={Strix: Explicit reactive synthesis strikes back!},
+  author={Meyer, Philipp J and Sickert, Salomon and Luttenberger, Michael},
+  booktitle={International Conference on Computer Aided Verification},
+  pages={578--586},
+  year={2018},
+  organization={Springer}
+}
+@article{2001attiesynth,
+author = {Attie, Paul C. and Emerson, E. Allen},
+title = {Synthesis of Concurrent Programs for an Atomic Read/Write Model of Computation},
+year = {2001},
+issue_date = {March 2001},
+publisher = {Association for Computing Machinery},
+
+volume = {23},
+number = {2},
+issn = {0164-0925},
+url = {https://doi.org/10.1145/383043.383044},
+doi = {10.1145/383043.383044},
+abstract = {Methods for mechanically synthesizing concurrent programs for temporal logic specifications have been proposed by Emerson and Clarke and by Manna and Wolper. An important advantage of these synthesis methods is that they obviate the need to manually compose a program and manually construct a proof of its correctness. A serious drawback of these methods in practice, however, is that they produce concurrent programs for models of computation that are often unrealistic, involving highly centralized system architecture (Manna and Wolper), processes with global information about the system state (Emerson and Clarke), or reactive modules that can read all of their inputs in one atomic step (Anuchitanukul and Manna, and Pnueli and Rosner). Even simple synchronization protocols based on atomic read/write primitives such as Peterson's solution to the mutual exclusion problem have remained outside the scope of practical mechanical synthesis methods. In this paper, we show how to mechanically synthesize in more realistic computational models solutions to synchronization problems. We illustrate the method by synthesizing Peterson's solution to the mutual exclusion problem.},
+journal = {ACM Trans. Program. Lang. Syst.},
+month = {mar},
+pages = {187–242},
+numpages = {56},
+keywords = {temporal logic, concurrent programs, atomic registers, program synthesis, specification}
+}
+@article{82emersonclarke,
+  author    = {E. Allen Emerson and
+               Edmund M. Clarke},
+  title     = {Using Branching Time Temporal Logic to Synthesize Synchronization
+               Skeletons},
+  journal   = {Sci. Comput. Program.},
+  volume    = {2},
+  number    = {3},
+  pages     = {241--266},
+  year      = {1982},
+  url       = {https://doi.org/10.1016/0167-6423(83)90017-5},
+  doi       = {10.1016/0167-6423(83)90017-5},
+  timestamp = {Wed, 17 Feb 2021 21:55:59 +0100},
+  biburl    = {https://dblp.org/rec/journals/scp/EmersonC82.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+@inproceedings{goel19syntaxic3,
+  author    = {Aman Goel and
+               Karem A. Sakallah},
+  editor    = {Julia M. Badger and
+               Kristin Yvonne Rozier},
+  title     = {Model Checking of Verilog {RTL} Using {IC3} with Syntax-Guided Abstraction},
+  booktitle = {{NASA} Formal Methods - 11th International Symposium, {NFM} 2019,
+               Houston, TX, USA, May 7-9, 2019, Proceedings},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {11460},
+  pages     = {166--185},
+  publisher = {Springer},
+  year      = {2019},
+  url       = {https://doi.org/10.1007/978-3-030-20652-9\_11},
+  doi       = {10.1007/978-3-030-20652-9\_11},
+  timestamp = {Mon, 15 Jun 2020 17:02:31 +0200},
+  biburl    = {https://dblp.org/rec/conf/nfm/GoelS19.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+@InProceedings{koenigpadon2022,
+author="Koenig, Jason R.
+and Padon, Oded
+and Shoham, Sharon
+and Aiken, Alex",
+editor="Fisman, Dana
+and Rosu, Grigore",
+title={{Inferring Invariants with Quantifier Alternations: Taming the Search Space Explosion}},
+booktitle="Tools and Algorithms for the Construction and Analysis of Systems",
+year="2022",
+publisher="Springer International Publishing",
+address="Cham",
+pages="338--356",
+abstract="We present a PDR/IC3 algorithm for finding inductive invariants with quantifier alternations. We tackle scalability issues that arise due to the large search space of quantified invariants by combining a breadth-first search strategy and a new syntactic form for quantifier-free bodies. The breadth-first strategy prevents inductive generalization from getting stuck in regions of the search space that are expensive to search and focuses instead on lemmas that are easy to discover. The new syntactic form is well-suited to lemmas with quantifier alternations by allowing both limited conjunction and disjunction in the quantifier-free body, while carefully controlling the size of the search space. Combining the breadth-first strategy with the new syntactic form results in useful inductive bias by prioritizing lemmas according to: (i) well-defined syntactic metrics for simple quantifier structures and quantifier-free bodies, and (ii) the empirically useful heuristic of preferring lemmas that are fast to discover. On a benchmark suite of primarily distributed protocols and complex Paxos variants, we demonstrate that our algorithm can solve more of the most complicated examples than state-of-the-art techniques.",
+isbn="978-3-030-99524-9"
+}
+@InProceedings{braithwaite_et_al2020,
+  author =	{Sean Braithwaite and Ethan Buchman and Igor Konnov and Zarko Milosevic and Ilina Stoilkovska and Josef Widder and Anca Zamfir},
+  title =	{{Formal Specification and Model Checking of the Tendermint Blockchain Synchronization Protocol (Short Paper)}},
+  booktitle =	{2nd Workshop on Formal Methods for Blockchains (FMBC 2020)},
+  pages =	{10:1--10:8},
+  series =	{OpenAccess Series in Informatics (OASIcs)},
+  ISBN =	{978-3-95977-169-6},
+  ISSN =	{2190-6807},
+  year =	{2020},
+  volume =	{84},
+  editor =	{Bruno Bernardo and Diego Marmsoler},
+  publisher =	{Schloss Dagstuhl--Leibniz-Zentrum f{\"u}r Informatik},
+  address =	{Dagstuhl, Germany},
+  URL =		{https://drops.dagstuhl.de/opus/volltexte/2020/13423},
+  URN =		{urn:nbn:de:0030-drops-134238},
+  doi =		{10.4230/OASIcs.FMBC.2020.10},
+  annote =	{Keywords: Blockchain, Fault Tolerance, Byzantine Faults, Model Checking}
+}
+@INPROCEEDINGS{beersintel08,
+  author={Beers, Robert},
+  booktitle={2008 45th ACM/IEEE Design Automation Conference}, 
+  title={{Pre-RTL formal verification: An Intel experience}}, 
+  year={2008},
+  volume={},
+  number={},
+  pages={806-811},
+  doi={10.1145/1391469.1391675}}
+@software{fmcad22artifact,
+  author       = {Schultz, William and Dardik, Ian and Tripakis, Stavros},
+  title        = {{Artifact for FMCAD 2022 paper: Plain and Simple Inductive Invariant Inference for Distributed Protocols in TLA+}},
+  month        = aug,
+  year         = 2022,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.6994922},
+  url          = {https://doi.org/10.5281/zenodo.6994922},
+  howpublished = {\url{https://doi.org/10.5281/zenodo.6994922}}
+}
+@misc{endivetool,
+  title = {{endive invariant inference tool, Github repository}},
+  year = {2022},
+  howpublished = {\url{https://github.com/will62794/endive}},
+}
+@inproceedings{schultz2022plain,
+  title={{Plain and Simple Inductive Invariant Inference for Distributed Protocols in TLA+}},
+  author={Schultz, William and Dardik, Ian and Tripakis, Stavros},
+  booktitle={2022 Formal Methods in Computer-Aided Design (FMCAD)},
+  pages={273--283},
+  year={2022},
+  organization={IEEE}
+}
+@article{lamport1998the,
+author = {Lamport, Leslie},
+title = {{The Part-Time Parliament}},
+year = {1998},
+issue_date = {May 1998},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {16},
+number = {2},
+issn = {0734-2071},
+url = {https://doi.org/10.1145/279227.279229},
+doi = {10.1145/279227.279229},
+journal = {ACM Trans. Comput. Syst.},
+month = {May},
+pages = {133–169},
+numpages = {37},
+keywords = {voting, three-phase commit, state machines}
+}
+@InProceedings{2004bouajani,
+author="Bouajjani, Ahmed
+and Habermehl, Peter
+and Vojnar, Tom{\'a}{\v{s}}",
+editor="Alur, Rajeev
+and Peled, Doron A.",
+title={{Abstract Regular Model Checking}},
+booktitle="Computer Aided Verification",
+year="2004",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="372--386",
+abstract="We propose abstract regular model checking as a new generic technique for verification of parametric and infinite-state systems. The technique combines the two approaches of regular model checking and verification by abstraction. We propose a general framework of the method as well as several concrete ways of abstracting automata or transducers, which we use for modelling systems and encoding sets of their configurations as usual in regular model checking. The abstraction is based on collapsing states of automata (or transducers) and its precision is being incrementally adjusted by analysing spurious counterexamples. We illustrate the technique on verification of a wide range of systems including a novel application of automata-based techniques to an example of systems with dynamic linked data structures.",
+isbn="978-3-540-27813-9"
+}
+@article{2016abdulla,
+author = {Abdulla, Parosh and Haziza, Fr\'{e}d\'{e}ric and Hol\'{\i}k, Luk\'{a}\v{s}},
+title = {Parameterized Verification through View Abstraction},
+year = {2016},
+issue_date = {October   2016},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+volume = {18},
+number = {5},
+issn = {1433-2779},
+url = {https://doi.org/10.1007/s10009-015-0406-x},
+doi = {10.1007/s10009-015-0406-x},
+abstract = {We present a simple and efficient framework for automatic verification of systems with a parametric number of communicating processes. The processes may be organized in various topologies such as words, multisets, rings, or trees. Our method needs to inspect only a small number of processes in order to show correctness of the whole system. It relies on an abstraction function that views the system from the perspective of a fixed number of processes. The abstraction is used during the verification procedure in order to dynamically detect cut-off points beyond which the search of the state space need not continue. We show that the method is complete for a large class of well quasi-ordered systems including Petri nets. Our experimentation on a variety of benchmarks demonstrate that the method is highly efficient and that it works well even for classes of systems with undecidable verification problems. In particular, the method handles the fine-grained and full version of Szymanski's mutual exclusion protocol, whose correctness, to the best of our knowledge, has not been proven automatically by any other existing methods.},
+journal = {Int. J. Softw. Tools Technol. Transf.},
+month = {Oct},
+pages = {495–516},
+numpages = {22},
+keywords = {Small model properties, Parameterized systems, View abstraction, Safety}
+}
+@inproceedings{2010mcmt,
+author = {Ghilardi, Silvio and Ranise, Silvio},
+title = {{MCMT: A Model Checker modulo Theories}},
+year = {2010},
+isbn = {3642142028},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+url = {https://doi.org/10.1007/978-3-642-14203-1_3},
+doi = {10.1007/978-3-642-14203-1_3},
+abstract = {We describe mcmt, a fully declarative and deductive symbolic model checker for safety properties of infinite state systems whose state variables are arrays. Theories specify the properties of the indexes and the elements of the arrays. Sets of states and transitions of a system are described by quantified first-order formulae. The core of the system is a backward reachability procedure which symbolically computes pre-images of the set of unsafe states and checks for safety and fix-points by solving Satisfiability Modulo Theories (SMT) problems. Besides standard SMT techniques, efficient heuristics for quantifier instantiation, specifically tailored to model checking, are at the very heart of the system. mcmt has been successfully applied to the verification of imperative programs, parametrised, timed, and distributed systems.},
+booktitle = {Proceedings of the 5th International Conference on Automated Reasoning},
+pages = {22–29},
+numpages = {8},
+location = {Edinburgh, UK},
+series = {IJCAR'10}
+}
+
+@inproceedings{lamport2011,
+author = {Lamport, Leslie},
+title = {Byzantizing Paxos by Refinement},
+year = {2011},
+isbn = {9783642240997},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+abstract = {We derive a 3f +1 process Byzantine Paxos consensus algorithm by Byzantizing a variant of the ordinary Paxos algorithm--that is, by having 2f+1 nonfaulty processes emulate the ordinary Paxos algorithm despite the presence of f malicious processes. We have written a formal, machine-checked proof that the Byzantized algorithm implements the ordinary Paxos consensus algorithm under a suitable refinement mapping.},
+booktitle = {Proceedings of the 25th International Conference on Distributed Computing},
+pages = {211–224},
+numpages = {14},
+location = {Rome, Italy},
+series = {DISC'11}
+}
+@book{udupa2016synthesisudupathesis,
+  title={Synthesis of distributed protocols from scenarios and specifications},
+  author={Udupa, Abhishek},
+  year={2016},
+  publisher={University of Pennsylvania}
+}
+@inproceedings{taube2018modularity,
+  title={Modularity for decidability of deductive verification with applications to distributed systems},
+  author={Taube, Marcelo and Losa, Giuliano and McMillan, Kenneth L and Padon, Oded and Sagiv, Mooly and Shoham, Sharon and Wilcox, James R and Woos, Doug},
+  booktitle={Proceedings of the 39th ACM SIGPLAN Conference on Programming Language Design and Implementation},
+  pages={662--677},
+  year={2018}
+}
+@inproceedings{cobleigh2003learning,
+  title={Learning assumptions for compositional verification},
+  author={Cobleigh, Jamieson M and Giannakopoulou, Dimitra and P{\u{a}}s{\u{a}}reanu, Corina S},
+  booktitle={Tools and Algorithms for the Construction and Analysis of Systems: 9th International Conference, TACAS 2003 Held as Part of the Joint European Conferences on Theory and Practice of Software, ETAPS 2003 Warsaw, Poland, April 7--11, 2003 Proceedings 9},
+  pages={331--346},
+  year={2003},
+  organization={Springer}
+}
+@article{MCMILLAN2000279,
+title = {A methodology for hardware verification using compositional model checking},
+journal = {Science of Computer Programming},
+volume = {37},
+number = {1},
+pages = {279-309},
+year = {2000},
+issn = {0167-6423},
+doi = {https://doi.org/10.1016/S0167-6423(99)00030-1},
+url = {https://www.sciencedirect.com/science/article/pii/S0167642399000301},
+author = {K.L. McMillan},
+keywords = {Hardware verification, Design refinement, Compositional model checking, Symbolic model checking, Data type reduction, Symmetry, Uninterpreted functions, SMV, Tomasulo's algorithm, Cache coherence protocol},
+abstract = {A methodology for system-level hardware verification based on compositional model checking is described. This methodology relies on a simple set of proof techniques, and a domain specific strategy for applying them. The goal of this strategy is to reduce the verification of a large system to finite state subgoals that are tractable in both size and number. These subgoals are then discharged by model checking. The proof strategy uses proof techniques for design refinement, temporal case splitting, data-type reduction and the exploitation of symmetry. Uninterpreted functions can be used to abstract operations on data. A proof system supporting this approach generates verification subgoals to be discharged by the SMV symbolic model checker. Application of the methodology is illustrated using an implementation of Tomasulo's algorithm, a packet buffering device and a cache coherence protocol as examples.}
+}
+@book{bertot2013interactive,
+  title={Interactive theorem proving and program development: Coq’Art: the calculus of inductive constructions},
+  author={Bertot, Yves and Cast{\'e}ran, Pierre},
+  year={2013},
+  publisher={Springer Science \& Business Media}
+}
+@INPROCEEDINGS{2009binghamindustry,
+  author={Bingham, Jesse and Erickson, John and Singh, Gaurav and Andersen, Flemming},
+  booktitle={2009 Formal Methods in Computer-Aided Design}, 
+  title={Industrial strength refinement checking}, 
+  year={2009},
+  volume={},
+  number={},
+  pages={180-183},
+  doi={10.1109/FMCAD.2009.5351123}
+}
+@inproceedings{kaivola2009replacing,
+  title={Replacing testing with formal verification in intel coretm i7 processor execution engine validation},
+  author={Kaivola, Roope and Ghughal, Rajnish and Narasimhan, Naren and Telfer, Amber and Whittemore, Jesse and Pandav, Sudhindra and Slobodov{\'a}, Anna and Taylor, Christopher and Frolov, Vladimir and Reeber, Erik and others},
+  booktitle={International Conference on Computer Aided Verification},
+  pages={414--429},
+  year={2009},
+  organization={Springer}
+}
+
+@inproceedings{Farzan2015InductiveDF,
+  author       = {Azadeh Farzan and
+                  Zachary Kincaid and
+                  Andreas Podelski},
+  editor       = {Roberto Giacobazzi and
+                  Radhia Cousot},
+  title        = {{Inductive Data Flow Graphs}},
+  booktitle    = {The 40th Annual {ACM} {SIGPLAN-SIGACT} Symposium on Principles of
+                  Programming Languages, {POPL} '13, Rome, Italy - January 23 - 25,
+                  2013},
+  pages        = {129--142},
+  publisher    = {{ACM}},
+  year         = {2013},
+  url          = {https://doi.org/10.1145/2429069.2429086},
+  doi          = {10.1145/2429069.2429086},
+  timestamp    = {Tue, 21 Mar 2023 21:02:05 +0100},
+  biburl       = {https://dblp.org/rec/conf/popl/FarzanKP13.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{YaoTGN22,
+  author       = {Jianan Yao and
+                  Runzhou Tao and
+                  Ronghui Gu and
+                  Jason Nieh},
+  editor       = {Marcos K. Aguilera and
+                  Hakim Weatherspoon},
+  title        = {{DuoAI: Fast, Automated Inference of Inductive Invariants for Verifying
+                  Distributed Protocols}},
+  booktitle    = {16th {USENIX} Symposium on Operating Systems Design and Implementation,
+                  {OSDI} 2022, Carlsbad, CA, USA, July 11-13, 2022},
+  pages        = {485--501},
+  publisher    = {{USENIX} Association},
+  year         = {2022},
+  url          = {https://www.usenix.org/conference/osdi22/presentation/yao},
+  timestamp    = {Tue, 11 Oct 2022 16:51:12 +0200},
+  biburl       = {https://dblp.org/rec/conf/osdi/YaoTGN22.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{10.1145/2429069.2429086,
+author = {Farzan, Azadeh and Kincaid, Zachary and Podelski, Andreas},
+title = {Inductive Data Flow Graphs},
+year = {2013},
+isbn = {9781450318327},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2429069.2429086},
+doi = {10.1145/2429069.2429086},
+abstract = {The correctness of a sequential program can be shown by the annotation of its control flow graph with inductive assertions. We propose inductive data flow graphs, data flow graphs with incorporated inductive assertions, as the basis of an approach to verifying concurrent programs. An inductive data flow graph accounts for a set of dependencies between program actions in interleaved thread executions, and therefore stands as a representation for the set of concurrent program traces which give rise to these dependencies. The approach first constructs an inductive data flow graph and then checks whether all program traces are represented. The size of the inductive data flow graph is polynomial in the number of data dependencies (in a sense that can be made formal); it does not grow exponentially in the number of threads unless the data dependencies do. The approach shifts the burden of the exponential explosion towards the check whether all program traces are represented, i.e., to a combinatorial problem (over finite graphs).},
+booktitle = {Proceedings of the 40th Annual ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages},
+pages = {129–142},
+numpages = {14},
+keywords = {concurrency, verification, static analysis},
+location = {Rome, Italy},
+series = {POPL '13}
+}
+
+
+@inproceedings{Ma2022SiftUR,
+  title={{Sift: Using Refinement-guided Automation to Verify Complex Distributed Systems}},
+  author={Haojun Ma and Hammad Ahmad and Aman Goel and Eli Goldweber and Jean-Baptiste Jeannin and Manos Kapritsos and Baris Kasikci},
+  booktitle={USENIX Annual Technical Conference},
+  year={2022},
+  url={https://api.semanticscholar.org/CorpusID:251019753}
+}
+@inproceedings{Lynce2004OnCM,
+  title={On Computing Minimum Unsatisfiable Cores},
+  author={In{\^e}s Lynce and Joao Marques-Silva},
+  booktitle={International Conference on Theory and Applications of Satisfiability Testing},
+  year={2004},
+  url={https://api.semanticscholar.org/CorpusID:16513723}
+}
+@article{2008sakallahmus,
+author = {Liffiton, Mark H. and Sakallah, Karem A.},
+title = {Algorithms for Computing Minimal Unsatisfiable Subsets of Constraints},
+year = {2008},
+issue_date = {January   2008},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+volume = {40},
+number = {1},
+issn = {0168-7433},
+url = {https://doi.org/10.1007/s10817-007-9084-z},
+doi = {10.1007/s10817-007-9084-z},
+abstract = {Much research in the area of constraint processing has recently been focused on extracting small unsatisfiable "cores" from unsatisfiable constraint systems with the goal of finding minimal unsatisfiable subsets (MUSes). While most techniques have provided ways to find an approximation of an MUS (not necessarily minimal), we have developed a sound and complete algorithm for producing all MUSes of an unsatisfiable constraint system. In this paper, we describe a relationship between satisfiable and unsatisfiable subsets of constraints that we subsequently use as the foundation for MUS extraction algorithms, implemented for Boolean satisfiability constraints. The algorithms provide a framework with which many related subproblems can be solved, including relaxations of completeness to handle intractable instances, and we develop several variations of the basic algorithms to illustrate this. Experimental results demonstrate the performance of our algorithms, showing how the base algorithms run quickly on many instances, while the variations are valuable for producing results on instances whose complete results are intractably large. Furthermore, our algorithms are shown to perform better than the existing algorithms for solving either of the two distinct phases of our approach.},
+journal = {J. Autom. Reason.},
+month = {jan},
+pages = {1–33},
+numpages = {33},
+keywords = {Constraint satisfaction, Minimal unsatifiable subset, CAMUS}
+}
+@article{2016enumeratingMUS,
+author = {Liffiton, Mark H. and Previti, Alessandro and Malik, Ammar and Marques-Silva, Joao},
+title = {Fast, Flexible MUS Enumeration},
+year = {2016},
+issue_date = {April     2016},
+publisher = {Kluwer Academic Publishers},
+address = {USA},
+volume = {21},
+number = {2},
+issn = {1383-7133},
+url = {https://doi.org/10.1007/s10601-015-9183-0},
+doi = {10.1007/s10601-015-9183-0},
+abstract = {The problem of enumerating minimal unsatisfiable subsets (MUSes) of an infeasible constraint system is challenging due first to the complexity of computing even a single MUS and second to the potentially intractable number of MUSes an instance may contain. In the face of the latter issue, when complete enumeration is not feasible, a partial enumeration of MUSes can be valuable, ideally with a time cost for each MUS output no greater than that needed to extract a single MUS. Recently, two papers independently presented a new MUS enumeration algorithm well suited to partial MUS enumeration (Liffiton and Malik, 2013, Previti and Marques-Silva, 2013). The algorithm exhibits good anytime performance, steadily producing MUSes throughout its execution; it is constraint agnostic, applying equally well to any type of constraint system; and its flexible structure allows it to incorporate advances in single MUS extraction algorithms and eases the creation of further improvements and modifications. This paper unifies and expands upon the earlier work, presenting a detailed explanation of the algorithm's operation in a framework that also enables clearer comparisons to previous approaches, and we present a new optimization of the algorithm as well. Expanded experimental results illustrate the algorithm's improvement over past approaches and newly explore some of its variants.},
+journal = {Constraints},
+month = {apr},
+pages = {223–250},
+numpages = {28},
+keywords = {Minimal correction sets, MUS enumeration, Minimal unsatisfiable subsets, Infeasibility analysis}
+}
+@article{Gurfinkel2015PushingTT,
+  title={Pushing to the top},
+  author={A. Gurfinkel and Alexander Ivrii},
+  journal={2015 Formal Methods in Computer-Aided Design (FMCAD)},
+  year={2015},
+  pages={65-72},
+  url={https://api.semanticscholar.org/CorpusID:1586742}
+}
+@article{2011COI,
+author = {Gordon, Michael J. and Kaufmann, Matt and Ray, Sandip},
+title = {{The Right Tools for the Job: Correctness of Cone of Influence Reduction Proved Using ACL2 and HOL4}},
+year = {2011},
+issue_date = {June      2011},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+volume = {47},
+number = {1},
+issn = {0168-7433},
+url = {https://doi.org/10.1007/s10817-010-9169-y},
+doi = {10.1007/s10817-010-9169-y},
+abstract = {We present a case study illustrating how to exploit the expressive power of higher-order logic to complete a proof whose main lemma is already proved in a first-order theorem prover. Our proof exploits a link between the HOL4 and ACL2 proof systems to show correctness of a cone of influence reduction algorithm, implemented in ACL2, with respect to the classical semantics of linear temporal logic, formalized in HOL4.},
+journal = {J. Autom. Reason.},
+month = {jun},
+pages = {1–16},
+numpages = {16},
+keywords = {Automated reasoning, Combining theorem provers, Higher-order logic, Model checking, Theorem proving, Linear temporal logic}
+}
+@article{Tip1994ASO,
+  title={A survey of program slicing techniques},
+  author={Frank Tip},
+  journal={J. Program. Lang.},
+  year={1994},
+  volume={3},
+  url={https://api.semanticscholar.org/CorpusID:9882901}
+}
+@article{lamport1995write,
+  title={How to write a proof},
+  author={Lamport, Leslie},
+  journal={The American mathematical monthly},
+  volume={102},
+  number={7},
+  pages={600--608},
+  year={1995},
+  publisher={Taylor \& Francis}
+}
+@phdthesis{WilcoxThesis21,
+  author       = {James R. Wilcox},
+  title        = {Compositional and Automated Verification of Distributed Systems},
+  school       = {University of Washington, {USA}},
+  year         = {2021},
+  url          = {https://hdl.handle.net/1773/47988},
+  timestamp    = {Wed, 04 May 2022 13:00:59 +0200},
+  biburl       = {https://dblp.org/rec/phd/us/Wilcox21.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+@article{2020tidb,
+author = {Huang, Dongxu and Liu, Qi and Cui, Qiu and Fang, Zhuhe and Ma, Xiaoyu and Xu, Fei and Shen, Li and Tang, Liu and Zhou, Yuxing and Huang, Menglong and Wei, Wan and Liu, Cong and Zhang, Jian and Li, Jianjun and Wu, Xuelian and Song, Lingyu and Sun, Ruoxi and Yu, Shuaipeng and Zhao, Lei and Cameron, Nicholas and Pei, Liquan and Tang, Xin},
+title = {{TiDB: A Raft-Based HTAP Database}},
+year = {2020},
+issue_date = {August 2020},
+publisher = {VLDB Endowment},
+volume = {13},
+number = {12},
+issn = {2150-8097},
+url = {https://doi.org/10.14778/3415478.3415535},
+doi = {10.14778/3415478.3415535},
+abstract = {Hybrid Transactional and Analytical Processing (HTAP) databases require processing transactional and analytical queries in isolation to remove the interference between them. To achieve this, it is necessary to maintain different replicas of data specified for the two types of queries. However, it is challenging to provide a consistent view for distributed replicas within a storage system, where analytical requests can efficiently read consistent and fresh data from transactional workloads at scale and with high availability.To meet this challenge, we propose extending replicated state machine-based consensus algorithms to provide consistent replicas for HTAP workloads. Based on this novel idea, we present a Raft-based HTAP database: TiDB. In the database, we design a multi-Raft storage system which consists of a row store and a column store. The row store is built based on the Raft algorithm. It is scalable to materialize updates from transactional requests with high availability. In particular, it asynchronously replicates Raft logs to learners which transform row format to column format for tuples, forming a real-time updatable column store. This column store allows analytical queries to efficiently read fresh and consistent data with strong isolation from transactions on the row store. Based on this storage system, we build an SQL engine to process large-scale distributed transactions and expensive analytical queries. The SQL engine optimally accesses row-format and column-format replicas of data. We also include a powerful analysis engine, TiSpark, to help TiDB connect to the Hadoop ecosystem. Comprehensive experiments show that TiDB achieves isolated high performance under CH-benCHmark, a benchmark focusing on HTAP workloads.},
+journal = {Proc. VLDB Endow.},
+month = {aug},
+pages = {3072–3084},
+numpages = {13}
+}
+@inproceedings{2012spannerosdi,
+title	= {{Spanner: Google's Globally-Distributed Database}},
+author	= {James C. Corbett and Jeffrey Dean and Michael Epstein and Andrew Fikes and Christopher Frost and JJ Furman and Sanjay Ghemawat and Andrey Gubarev and Christopher Heiser and Peter Hochschild and Wilson Hsieh and Sebastian Kanthak and Eugene Kogan and Hongyi Li and Alexander Lloyd and Sergey Melnik and David Mwaura and David Nagle and Sean Quinlan and Rajesh Rao and Lindsay Rolig and Dale Woodford and Yasushi Saito and Christopher Taylor and Michal Szymaniak and Ruth Wang},
+year	= {2012},
+booktitle	= {OSDI}
+}
+@article{OngaroDissertation2014,
+abstract = {Distributed consensus is fundamental to building fault-tolerant systems. It allows a collection of machines to work as a coherent group that can survive the failures of some of its members. Unfortunately, the most common consensus algorithm, Paxos, is widely regarded as difficult to understand and implement correctly. This dissertation presents a new consensus algorithm called Raft, which was designed for understandability. Raft first elects a server as leader, then concentrates all decision-making onto the leader. These two basic steps are relatively independent and form a better structure than Paxos, whose components are hard to separate. Raft elects a leader using voting and randomized timeouts. The election guarantees that the leader already stores all the information it needs, so data only flows outwards from the leader to other servers. Compared to other leader-based algorithms, this reduces mechanism and simplifies the behavior. Once a leader is elected, it manages a replicated log. Raft leverages a simple invariant on how logs grow to reduce the algorithm's state space and accomplish this task with minimal mechanism. Raft is also more suitable than previous algorithms for real-world implementations. It performs well enough for practical deployments, and it addresses all aspects of building a complete system, including how to manage client interactions, how to change the cluster membership, and how to compact the log when it grows too large. To change the cluster membership, Raft allows adding or removing one server at a time (complex changes can be composed from these basic steps), and the cluster continues servicing requests throughout the change. We believe that Raft is superior to Paxos and other consensus algorithms, both for educational purposes and as a foundation for implementation. Results from a user study demonstrate that Raft is easier for students to learn than Paxos. The algorithm has been formally specified and proven, its leader election algorithm works well in a variety of environments, and its performance is equivalent to Multi-Paxos. Many implementations of Raft are now available, and several companies are deploying Raft},
+author = {Ongaro, Diego},
+journal = {Doctoral thesis},
+keywords = {Distributed Systems},
+mendeley-tags = {Distributed Systems},
+title = {{Consensus: Bridging Theory and Practice}},
+year = {2014}
+}
+@misc{Vanlightly2023,
+  author = {Vanlightly, Jack},
+  title = {{raft-tlaplus: A TLA+ specification of the Raft distributed consensus algorithm}},
+  year = {2023},
+  note = {GitHub repository},
+  url = {https://github.com/Vanlightly/raft-tlaplus/blob/main/specifications/standard-raft/Raft.tla},
+  lastaccessed = {November 10, 2023},
+  howpublished={\url{https://github.com/Vanlightly/raft-tlaplus/blob/main/specifications/standard-raft/Raft.tla}}
+}
+@article{2017choikami,
+author = {Choi, Joonwon and Vijayaraghavan, Muralidaran and Sherman, Benjamin and Chlipala, Adam and Arvind},
+title = {Kami: A Platform for High-Level Parametric Hardware Specification and Its Modular Verification},
+year = {2017},
+issue_date = {September 2017},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {1},
+number = {ICFP},
+url = {https://doi.org/10.1145/3110268},
+doi = {10.1145/3110268},
+abstract = {It has become fairly standard in the programming-languages research world to verify functional programs in proof assistants using induction, algebraic simplification, and rewriting. In this paper, we introduce Kami, a Coq library that enables similar expressive and modular reasoning for hardware designs expressed in the style of the Bluespec language. We can specify, implement, and verify realistic designs entirely within Coq, ending with automatic extraction into a pipeline that bottoms out in FPGAs. Our methodology, using labeled transition systems, has been evaluated in a case study verifying an infinite family of multicore systems, with cache-coherent shared memory and pipelined cores implementing (the base integer subset of) the RISC-V instruction set.},
+journal = {Proc. ACM Program. Lang.},
+month = {aug},
+articleno = {24},
+numpages = {30},
+keywords = {hardware, proof assistants, formal verification}
+}
+@inproceedings{newcombe2014amazon,
+  title={{Why Amazon Chose TLA+}},
+  author={Newcombe, Chris},
+  booktitle={International Conference on Abstract State Machines, Alloy, B, TLA, VDM, and Z},
+  pages={25--39},
+  year={2014},
+  organization={Springer}
+}
+@article{ouyang2023leveraging,
+  author       = {Lingzhi Ouyang and
+                  Yu Huang and
+                  Binyu Huang and
+                  Hengfeng Wei and
+                  Xiaoxing Ma},
+  title        = {Leveraging {TLA+} Specifications to Improve the Reliability of the
+                  ZooKeeper Coordination Service},
+  journal      = {CoRR},
+  volume       = {abs/2302.02703},
+  year         = {2023},
+  url          = {https://doi.org/10.48550/arXiv.2302.02703},
+  doi          = {10.48550/ARXIV.2302.02703},
+  eprinttype    = {arXiv},
+  eprint       = {2302.02703},
+  timestamp    = {Fri, 10 Feb 2023 12:26:39 +0100},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-2302-02703.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+@book{nipkow2002isabelle,
+  title={{Isabelle/HOL: a proof assistant for higher-order logic}},
+  author={Nipkow, Tobias and Wenzel, Markus and Paulson, Lawrence C},
+  year={2002},
+  publisher={Springer}
+}
+@article{hunt2017industrial,
+  title={Industrial hardware and software verification with ACL2},
+  author={Hunt Jr, Warren A and Kaufmann, Matt and Moore, J Strother and Slobodova, Anna},
+  journal={Philosophical Transactions of the Royal Society A: Mathematical, Physical and Engineering Sciences},
+  volume={375},
+  number={2104},
+  pages={20150399},
+  year={2017},
+  publisher={The Royal Society Publishing}
+}
+@inproceedings{2010zookeeper,
+author = {Hunt, Patrick and Konar, Mahadev and Junqueira, Flavio P. and Reed, Benjamin},
+title = {{ZooKeeper: Wait-Free Coordination for Internet-Scale Systems}},
+year = {2010},
+publisher = {USENIX Association},
+address = {USA},
+abstract = {In this paper, we describe ZooKeeper, a service for coordinating processes of distributed applications. Since ZooKeeper is part of critical infrastructure, ZooKeeper aims to provide a simple and high performance kernel for building more complex coordination primitives at the client. It incorporates elements from group messaging, shared registers, and distributed lock services in a replicated, centralized service. The interface exposed by Zoo-Keeper has the wait-free aspects of shared registers with an event-driven mechanism similar to cache invalidations of distributed file systems to provide a simple, yet powerful coordination service.The ZooKeeper interface enables a high-performance service implementation. In addition to the wait-free property, ZooKeeper provides a per client guarantee of FIFO execution of requests and linearizability for all requests that change the ZooKeeper state. These design decisions enable the implementation of a high performance processing pipeline with read requests being satisfied by local servers. We show for the target workloads, 2:1 to 100:1 read to write ratio, that ZooKeeper can handle tens to hundreds of thousands of transactions per second. This performance allows ZooKeeper to be used extensively by client applications.},
+booktitle = {Proceedings of the 2010 USENIX Conference on USENIX Annual Technical Conference},
+pages = {11},
+numpages = {1},
+location = {Boston, MA},
+series = {USENIXATC'10}
+}
+@Inbook{Barrett2018,
+author="Barrett, Clark
+and Tinelli, Cesare",
+editor="Clarke, Edmund M.
+and Henzinger, Thomas A.
+and Veith, Helmut
+and Bloem, Roderick",
+title="Satisfiability Modulo Theories",
+bookTitle="Handbook of Model Checking",
+year="2018",
+publisher="Springer International Publishing",
+address="Cham",
+pages="305--343",
+abstract="Satisfiability Modulo Theories (SMT) refers to the problem of determining whether a first-order formula is satisfiable with respect to some logical theory. Solvers based on SMT are used as back-end engines in model-checking applications such as bounded, interpolation-based, and predicate-abstraction-based model checking. After a brief illustration of these uses, we survey the predominant techniques for solving SMT problems with an emphasis on the lazy approach, in which a propositional satisfiability (SAT) solver is combined with one or more theory solvers. We discuss the architecture of a lazy SMT solver, give examples of theory solvers, show how to combine such solvers modularly, and mention several extensions of the lazy approach. We also briefly describe the eager approach in which the SMT problem is reduced to a SAT problem. Finally, we discuss how the basic framework for determining satisfiability can be extended with additional functionality such as producing models, proofs, unsatisfiable cores, and interpolants.",
+isbn="978-3-319-10575-8",
+doi="10.1007/978-3-319-10575-8_11",
+url="https://doi.org/10.1007/978-3-319-10575-8_11"
+}
+@InProceedings{1998mocha,
+author="Alur, R.
+and Henzinger, T. A.
+and Mang, F. Y. C.
+and Qadeer, S.
+and Rajamani, S. K.
+and Tasiran, S.",
+editor="Hu, Alan J.
+and Vardi, Moshe Y.",
+title="MOCHA: Modularity in model checking",
+booktitle="Computer Aided Verification",
+year="1998",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="521--525",
+isbn="978-3-540-69339-0"
+}
+@inproceedings{jaffar2012path,
+  title={{Path-sensitive backward slicing}},
+  author={Jaffar, Joxan and Murali, Vijayaraghavan and Navas, Jorge A and Santosa, Andrew E},
+  booktitle={Static Analysis: 19th International Symposium, SAS 2012, Deauville, France, September 11-13, 2012. Proceedings 19},
+  pages={231--247},
+  year={2012},
+  organization={Springer}
+}
+@inproceedings{jhala2005path,
+  title={Path slicing},
+  author={Jhala, Ranjit and Majumdar, Rupak},
+  booktitle={Proceedings of the 2005 ACM SIGPLAN Conference on Programming language Design and Implementation},
+  pages={38--47},
+  year={2005}
+}
+@article{biere03,
+  author       = {Armin Biere and
+                  Alessandro Cimatti and
+                  Edmund M. Clarke and
+                  Ofer Strichman and
+                  Yunshan Zhu},
+  title        = {Bounded model checking},
+  journal      = {Adv. Comput.},
+  volume       = {58},
+  pages        = {117--148},
+  year         = {2003},
+  url          = {https://doi.org/10.1016/S0065-2458(03)58003-2},
+  doi          = {10.1016/S0065-2458(03)58003-2},
+  timestamp    = {Wed, 20 May 2020 21:27:05 +0200},
+  biburl       = {https://dblp.org/rec/journals/ac/BiereCCSZ03.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+@article{lampson2pc,
+author = {Lampson, Butler and Sturgis, Howard},
+year = {1979},
+month = {06},
+pages = {},
+title = {{Crash Recovery in a Distributed Data Storage System}},
+journal = {Unpublished technical report, Xerox Palo Alto Research Center}
+}
+@inproceedings{2020hermesprotocol,
+author = {Katsarakis, Antonios and Gavrielatos, Vasilis and Katebzadeh, M.R. Siavash and Joshi, Arpit and Dragojevic, Aleksandar and Grot, Boris and Nagarajan, Vijay},
+title = {Hermes: A Fast, Fault-Tolerant and Linearizable Replication Protocol},
+year = {2020},
+isbn = {9781450371025},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3373376.3378496},
+doi = {10.1145/3373376.3378496},
+abstract = {Today's datacenter applications are underpinned by datastores that are responsible for providing availability, consistency, and performance. For high availability in the presence of failures, these datastores replicate data across several nodes. This is accomplished with the help of a reliable replication protocol that is responsible for maintaining the replicas strongly-consistent even when faults occur. Strong consistency is preferred to weaker consistency models that cannot guarantee an intuitive behavior for the clients. Furthermore, to accommodate high demand at real-time latencies, datastores must deliver high throughput and low latency.This work introduces Hermes, a broadcast-based reliable replication protocol for in-memory datastores that provides both high throughput and low latency by enabling local reads and fully-concurrent fast writes at all replicas. Hermes couples logical timestamps with cache-coherence-inspired invalidations to guarantee linearizability, avoid write serialization at a centralized ordering point, resolve write conflicts locally at each replica (hence ensuring that writes never abort) and provide fault-tolerance via replayable writes. Our implementation of Hermes over an RDMA-enabled reliable datastore with five replicas shows that Hermes consistently achieves higher throughput than state-of-the-art RDMA-based reliable protocols (ZAB and CRAQ) across all write ratios while also significantly reducing tail latency. At 5\% writes, the tail latency of Hermes is 3.6X lower than that of CRAQ and ZAB.},
+booktitle = {Proceedings of the Twenty-Fifth International Conference on Architectural Support for Programming Languages and Operating Systems},
+pages = {201–217},
+numpages = {17},
+keywords = {throughput, replication, rdma, linearizability, latency, fault-tolerant, consistency, availability},
+location = {Lausanne, Switzerland},
+series = {ASPLOS '20}
+}
+@inproceedings{ZeusKatsarakis21,
+author = {Katsarakis, Antonios and Ma, Yijun and Tan, Zhaowei and Bainbridge, Andrew and Balkwill, Matthew and Dragojevic, Aleksandar and Grot, Boris and Radunovic, Bozidar and Zhang, Yongguang},
+title = {Zeus: Locality-Aware Distributed Transactions},
+year = {2021},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+booktitle = {Proceedings of the Sixteenth European Conference on Computer Systems},
+location = {Online Event, United Kingdom},
+series = {EuroSys '21}
+}
+@article{1974lamportbakery,
+author = {Lamport, Leslie},
+title = {{A New Solution of Dijkstra's Concurrent Programming Problem}},
+year = {1974},
+issue_date = {Aug. 1974},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {17},
+number = {8},
+issn = {0001-0782},
+url = {https://doi.org/10.1145/361082.361093},
+doi = {10.1145/361082.361093},
+abstract = {A simple solution to the mutual exclusion problem is presented which allows the system to continue to operate despite the failure of any individual component.},
+journal = {Commun. ACM},
+month = {aug},
+pages = {453–455},
+numpages = {3},
+keywords = {semaphores, multiprocessing, critical section, concurrent programming}
+}
+@InProceedings{2015mosespatkin,
+author="Moses, Yoram
+and Patkin, Katia",
+editor="Scheideler, Christian",
+title="Under the Hood of the Bakery Algorithm: Mutual Exclusion as a Matter of Priority",
+booktitle="Structural Information and Communication Complexity",
+year="2015",
+publisher="Springer International Publishing",
+address="Cham",
+pages="399--413",
+abstract="A new approach to the study and analysis of Mutual Exclusion (ME) algorithms is presented, based on identifying the priority relation that the ME algorithm constructs. It is argued that by analyzing how a process detects that it has priority over all other processes, ME algorithms can be better understood and improved. The approach is illustrated by applying it to Lamport's celebrated Bakery algorithm in the safe register SWMR model. By analyzing how Bakery established and detects priority, cases in which the Bakery algorithm causes processes to block unnecessarily are identified. Namely, a process that already knows that it has priority over another process is made to perform reads and wait on registers of the other process. An optimized version of the Bakery algorithm, called Boulangerie, is proposed, and is shown to be free of any unnecessary blocking. A second contribution of the approach is obtaining a clear explanation for how the Bakery algorithm uses reads from safe registers to detect that a process has priority. Our analysis provides more insight into the workings of the Bakery algorithm than is obtained by other proofs of its correctness.",
+isbn="978-3-319-25258-2"
+}
+@article{1978lamportclocks,
+author = {Lamport, Leslie},
+title = {Time, clocks, and the ordering of events in a distributed system},
+year = {1978},
+issue_date = {July 1978},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {21},
+number = {7},
+issn = {0001-0782},
+url = {https://doi.org/10.1145/359545.359563},
+doi = {10.1145/359545.359563},
+abstract = {The concept of one event happening before another in a distributed system is examined, and is shown to define a partial ordering of the events. A distributed algorithm is given for synchronizing a system of logical clocks which can be used to totally order the events. The use of the total ordering is illustrated with a method for solving synchronization problems. The algorithm is then specialized for synchronizing physical clocks, and a bound is derived on how far out of synchrony the clocks can become.},
+journal = {Commun. ACM},
+month = {jul},
+pages = {558–565},
+numpages = {8},
+keywords = {multiprocess systems, distributed systems, computer networks, clock synchronization}
+}
+@INPROCEEDINGS{2013alursygus,
+  author={Alur, Rajeev and Bodik, Rastislav and Juniwal, Garvit and Martin, Milo M. K. and Raghothaman, Mukund and Seshia, Sanjit A. and Singh, Rishabh and Solar-Lezama, Armando and Torlak, Emina and Udupa, Abhishek},
+  booktitle={2013 Formal Methods in Computer-Aided Design}, 
+  title={Syntax-guided synthesis}, 
+  year={2013},
+  volume={},
+  number={},
+  pages={1-8},
+  keywords={Grammar;Syntactics;Heuristic algorithms;Concrete;Search problems;Libraries;Production},
+  doi={10.1109/FMCAD.2013.6679385}}
+
+@inproceedings{gray2pc,
+author = {Gray, Jim},
+title = {Notes on Data Base Operating Systems},
+year = {1978},
+isbn = {3540087559},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+booktitle = {Operating Systems, An Advanced Course},
+pages = {393–481},
+numpages = {89}
+}
+@article{2017claritydistalgo,
+author = {Liu, Yanhong A. and Stoller, Scott D. and Lin, Bo},
+title = {From Clarity to Efficiency for Distributed Algorithms},
+year = {2017},
+issue_date = {September 2017},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {39},
+number = {3},
+issn = {0164-0925},
+url = {https://doi.org/10.1145/2994595},
+doi = {10.1145/2994595},
+abstract = {This article describes a very high-level language for clear description of distributed algorithms and optimizations necessary for generating efficient implementations. The language supports high-level control flows in which complex synchronization conditions can be expressed using high-level queries, especially logic quantifications, over message history sequences. Unfortunately, the programs would be extremely inefficient, including consuming unbounded memory, if executed straightforwardly.We present new optimizations that automatically transform complex synchronization conditions into incremental updates of necessary auxiliary values as messages are sent and received. The core of the optimizations is the first general method for efficient implementation of logic quantifications. We have developed an operational semantics of the language, implemented a prototype of the compiler and the optimizations, and successfully used the language and implementation on a variety of important distributed algorithms.},
+journal = {ACM Trans. Program. Lang. Syst.},
+month = {may},
+articleno = {12},
+numpages = {41},
+keywords = {Distributed algorithms, high-level queries and updates, incrementalization, logic quantifications, message histories, synchronization conditions, yield points}
+}
+@article{2024optprotrewrites,
+author = {Chu, David C.Y. and Panchapakesan, Rithvik and Laddad, Shadaj and Katahanas, Lucky E. and Liu, Chris and Shivakumar, Kaushik and Crooks, Natacha and Hellerstein, Joseph M. and Howard, Heidi},
+title = {Optimizing Distributed Protocols with Query Rewrites},
+year = {2024},
+issue_date = {February 2024},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {2},
+number = {1},
+url = {https://doi.org/10.1145/3639257},
+doi = {10.1145/3639257},
+abstract = {Distributed protocols such as 2PC and Paxos lie at the core of many systems in the cloud, but standard implementations do not scale. New scalable distributed protocols are developed through careful analysis and rewrites, but this process is ad hoc and error-prone. This paper presents an approach for scaling any distributed protocol by applying rule-driven rewrites, borrowing from query optimization. Distributed protocol rewrites entail a new burden: reasoning about spatiotemporal correctness. We leverage order-insensitivity and data dependency analysis to systematically identify correct coordination-free scaling opportunities. We apply this analysis to create preconditions and mechanisms for coordination-free decoupling and partitioning, two fundamental vertical and horizontal scaling techniques. Manual rule-driven applications of decoupling and partitioning improve the throughput of 2PC by 5\texttimes{} and Paxos by 3\texttimes{}, and match state-of-the-art throughput in recent work. These results point the way toward automated optimizers for distributed protocols based on correct-by-construction rewrite rules.},
+journal = {Proc. ACM Manag. Data},
+month = {mar},
+articleno = {2},
+numpages = {25},
+keywords = {2PC, dataflow, datalog, distributed systems, monotonicity, partitioning, paxos, query optimization, relational algebra}
+}
