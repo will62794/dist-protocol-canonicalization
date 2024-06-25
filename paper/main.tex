@@ -111,23 +111,45 @@
 }
 
 \begin{abstract}
-    Formal modeling and specification of distributed protocols has found significant use in industry, and has been effective for finding bugs in protocol designs and communicating the behavior of protocols in a more precise manner. In practice, however, formal descriptions of these distributed protocols can still suffer from being complex and difficult to understand when specified at sufficient level of detail to fully capture fine-grained, asynchronous message passing details. This complexity leads to confusion around the separation between (1) the messaging-specific details and communication patterns of a protocol and (2) the essential behavior required for ensuring correctness.
-    Thus, a valuable goal aim is to explore approaches for abstracting away these message passing details and communication patterns of a protocol to the extent possible in the “textbook”, formal descriptions of protocols. We argue that they are a significant source of additional complexity within protocol models, that are particularly tedious and error prone when making modifications or optimizations to a protocol, especially as a protocol diverges further from a “textbook” description. We define a universal, “canonical” message passing model for how we specify message passing distributed protocols, that facilitates easier protocol comprehension, comparison, and modification.
+    Formal modeling and specification of distributed protocols has found significant use in industry, and has been effective for finding bugs in protocol designs and communicating the behavior of protocols in a more precise manner. In practice, however, formal descriptions of these distributed protocols can still suffer from being complex and difficult to understand when specified at sufficient level of detail to fully capture fine-grained, asynchronous message passing details. This complexity leads to confusion around the separation between (1) the \emph{messaging details and communication patterns of a protocol} and (2) the \emph{essential behavior} required for ensuring correctness.
+    In this paper, we explore an approach for abstracting away these message passing details and communication patterns of a protocol to the extent possible in the ``textbook", formal descriptions of protocols. We argue that they are a significant source of additional complexity within protocol models, that are particularly tedious and error prone when making modifications or optimizations to a protocol, especially as a protocol diverges further from a textbook description. We define a universal, \emph{canonical} message passing model for how we specify message passing distributed protocols, that facilitates easier protocol comprehension, comparison, and modification.
 \end{abstract}
 
 \maketitle
 
 \section{Introduction}
 
-Formal modeling and specification of distributed protocols has found significant use in industry [1,2], including at MongoDB, and has been effective for finding bugs in protocol designs and communicating the behavior of protocols in a more precise manner. In practice, however, formal descriptions of these distributed protocols can still suffer from being complex and difficult to understand when specified at sufficient level of detail to fully capture fine-grained, asynchronous message passing details [1,2,3]. This complexity leads to confusion around the separation between (1) the messaging-specific details and communication patterns of a protocol and (2) the essential behavior required for ensuring correctness.
+Formal modeling and specification of distributed protocols has found significant use in industry \cite{newcombe2014amazon,schultz2021formal}, and has been effective for finding bugs in protocol designs and communicating the behavior of protocols in a more precise manner. In practice, however, formal descriptions of these distributed protocols can still suffer from being complex and difficult to understand when specified at sufficient level of detail to fully capture fine-grained, asynchronous message passing details [1,2,3]. This complexity leads to confusion around the separation between (1) the messaging-specific details and communication patterns of a protocol and (2) the essential behavior required for ensuring correctness.
 
 For example, in MongoDB’s own Raft protocol variant, there has historically been significant deliberation around how state is correctly propagated between nodes, and when it is safe to learn certain facts via certain message types. Information also flows between nodes in MongoDB’s protocol in different patterns than in standard Raft (e.g. via replSetUpdatePosition, replSetHeartbeat, chain replication, etc.), though it has generally been understood that both protocols rely on essentially the same correctness arguments. More generally, protocols like Viewstamped Replication (VR) and Raft have, on the surface, quite different messaging types/patterns (e.g. AppendEntries, RequestVote in Raft, Prepare, ViewChange, etc. in VR), though the protocols are often considered by the community as fundamentally similar. Paxos/MultiPaxos and Raft suffer from a similar divergence in these details. 
 
-Thus, our aim is to explore approaches for abstracting away these message passing details and communication patterns of a protocol to the extent possible in the “textbook”, formal descriptions of protocols. We argue that they are a significant source of additional complexity within protocol models, that are particularly tedious and error prone when making modifications or optimizations to a protocol, especially as a protocol diverges further from a “textbook” description. Overall, our goal is to define a more universal, “canonical” model for how we specify message passing distributed protocols, that facilitates easier protocol comprehension, comparison, and modification.
+Thus, our aim is to explore approaches for abstracting away these message passing details and communication patterns of a protocol to the extent possible in the “textbook”, formal descriptions of protocols. We argue that they are a significant source of additional complexity within protocol models, that are particularly tedious and error prone when making modifications or optimizations to a protocol, especially as a protocol diverges further from a “textbook” description. Overall, our goal is to define a more universal, ``canonical" model for how we specify message passing distributed protocols, that facilitates easier protocol comprehension, comparison, and modification.
+
+Contributions of this paper include:
+\begin{itemize}
+    \item \textit{Uniform Modeling Abstraction}
+    \item \textit{Automatic Derivation of Protocol Optimizations}
+    \item \textit{Facilitated Protocol Comparison}
+\end{itemize}
+
+\section{Our Approach}
+
+We propose to model protocols in a \textit{universal message passing} style. In this model, distributed protocols are modeled as a set of nodes that communicate asynchronously over a shared network, but message types are eliminated and no pre-defined communication pattern between nodes is assumed. Concretely, all transitions of a protocol consist of a node
+
+\begin{enumerate}
+    \item Reading its local state and/or a message from the network. 
+    \item Updating its local state based on this read.
+    \item Broadcasting its entire updated state into the network as a new message. 
+\end{enumerate}
+In this model there are no defined message types, as all messages are simply a record of a node’s state at the time of sending. And, by default, nodes always broadcast their new state into the network on any state change. The hypothesis of this project is that this model affords several potential benefits, discussed below.
+
 
 \section{Related Work}
 
-DistAlgo defines a DSL for defining distributed algorithms at a high level, which can then be compiled into runnable implementations via incrementalization algorithms \cite{2017claritydistalgo}. Using the Dedalus language for modeling protocols \cite{2024optprotrewrites} designs approaches for automatically scaling distributed protocols via locally defined rewrite rules. This is similar in that it looks at how to abstract away the details of a protocol to make it more scalable, but it is focused on the runtime performance of a protocol, rather than the specification/correctness of a protocol. The \textit{Heard-Of Model} \cite{2006heardof} uses a round-based assumption on protocol models in an attempt to provide a more unifying model for failures. PaxosStore also includes a model of Paxos in a similar style, which they refer to as \textit{semi-symmetry message passing} \cite{2017paxosstore}.
+There is a long history of distributed computing models, defined at various levels of abstraction and for various purposes, ranging from abstract models to domain specific languages for describing protocols and implementations.
+Earliest abstract models include I/O automata \cite{Lynch1989AnIT}, and Lamport's TLA \cite{lamportthetla} for describing protocols as abstract state machines. The \textit{Heard-Of Model} \cite{2006heardof} is more recent work that uses a round-based assumption on protocol models in an attempt to provide a more unifying model for failures. 
+
+\textit{DistAlgo} defines a DSL for defining distributed algorithms at a high level, which can then be compiled into runnable implementations via incrementalization algorithms \cite{2017claritydistalgo}. Using the Dedalus language for modeling protocols \cite{2024optprotrewrites} designs approaches for automatically scaling distributed protocols via locally defined rewrite rules. This is similar in that it looks at how to abstract away the details of a protocol to make it more scalable, but it is focused on the runtime performance of a protocol, rather than the specification/correctness of a protocol. PaxosStore also includes a model of Paxos in a similar style, which they refer to as \textit{semi-symmetry message passing} \cite{2017paxosstore}.
 
 
 \bibliographystyle{acm}
