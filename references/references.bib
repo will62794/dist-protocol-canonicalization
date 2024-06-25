@@ -2176,9 +2176,26 @@ keywords = {2PC, dataflow, datalog, distributed systems, monotonicity, partition
 }
 
 @article{2006heardof,
-      title = {The Heard-Of Model: Unifying all Benign Failures},
+      title = {{The Heard-Of Model: Unifying all Benign Failures}},
       author = {Charron-Bost, Bernadette and Schiper, André},
       year = {2006},
       abstract = {Problems in fault-tolerant distributed computing have been  studied in a variety of models. These models are structured  around two central ideas: 1. Degree of synchrony and  failure model are two independent parameters that determine  a particular type of system. 2. Failure and faulty  component (i.e., the component responsible for the failure)  are necessary and indissociable notions for the analysis of  system behaviors. In this work, we question these two  dogmas and present a general computational model, suitable  for describing any type of system with benign failures,  that depends only on the notion of transmission failure. In  this model, computations evolve in rounds, and messages  missed at a round are lost. Only information transmission  is represented: for each round r and each process p, our  model provides the set of processes that p "hears of" at  round r (heard-of set) namely the processes from which p  receives some message at round r. The features of a  specific system are thus captured as a whole, just by a  predicate over the collection of heard-of sets. We show  that our model handles all types of benign failures, to be  static or dynamic, permanent or transient, in a unified  framework. Using this new approach, we are able to give  shorter and simpler proofs of important results  (non-solvability, lower bounds). In particular, we prove  that in general, Consensus cannot be solved without an  implicit and permanent consensus on heard-of sets. We also  examine Consensus algorithms in our model. In light of this  specific agreement problem, we show how our approach allows  us to devise new interesting solutions.},
       url = {http://infoscience.epfl.ch/record/88188},
+}
+@article{2017paxosstore,
+author = {Zheng, Jianjun and Lin, Qian and Xu, Jiatao and Wei, Cheng and Zeng, Chuwei and Yang, Pingan and Zhang, Yunfan},
+title = {{PaxosStore: high-availability storage made practical in WeChat}},
+year = {2017},
+issue_date = {August 2017},
+publisher = {VLDB Endowment},
+volume = {10},
+number = {12},
+issn = {2150-8097},
+url = {https://doi.org/10.14778/3137765.3137778},
+doi = {10.14778/3137765.3137778},
+abstract = {In this paper, we present PaxosStore, a high-availability storage system developed to support the comprehensive business of WeChat. It employs a combinational design in the storage layer to engage multiple storage engines constructed for different storage models. PaxosStore is characteristic of extracting the Paxos-based distributed consensus protocol as a middleware that is universally accessible to the underlying multi-model storage engines. This facilitates tuning, maintaining, scaling and extending the storage engines. According to our experience in engineering practice, to achieve a practical consistent read/write protocol is far more complex than its theory. To tackle such engineering complexity, we propose a layered design of the Paxos-based storage protocol stack, where PaxosLog, the key data structure used in the protocol, is devised to bridge the programming-oriented consistent read/write to the storage-oriented Paxos procedure. Additionally, we present optimizations based on Paxos that made fault-tolerance more efficient. Discussion throughout the paper primarily focuses on pragmatic solutions that could be insightful for building practical distributed storage systems.},
+journal = {Proc. VLDB Endow.},
+month = {aug},
+pages = {1730–1741},
+numpages = {12}
 }
