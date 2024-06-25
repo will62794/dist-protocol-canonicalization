@@ -131,40 +131,6 @@ BecomeCandidate(i) ==
     /\ msgs' = msgs \cup {UniversalMsg(i)}
     /\ UNCHANGED <<leaderVars, logVars>>
 
-\* Candidate i becomes a leader.
-BecomeLeader(i) ==
-    /\ state[i] = Candidate
-    /\ votesGranted[i] \in Quorum
-    /\ state'      = [state EXCEPT ![i] = Leader]
-    /\ nextIndex'  = [nextIndex EXCEPT ![i] = [j \in Server |-> Len(log[i]) + 1]]
-    /\ matchIndex' = [matchIndex EXCEPT ![i] = [j \in Server |-> 0]]
-    /\ UNCHANGED <<msgs, currentTerm, votedFor, candidateVars, logVars, msgs>>
-
-\* Leader i appends a new entry in its log.
-ClientRequest(i) ==
-    /\ state[i] = Leader
-    /\ log' = [log EXCEPT ![i] = Append(log[i], currentTerm[i])]
-    /\ msgs' = msgs \cup {UniversalMsg(i)}
-    /\ UNCHANGED <<serverVars, candidateVars,leaderVars, commitIndex>>
-
-\* The set of servers that agree up through index.
-Agree(i, index) == {i} \cup {k \in Server : matchIndex[i][k] >= index }
-
-\* Leader i advances its commitIndex.
-AdvanceCommitIndex(i) ==
-    /\ state[i] = Leader
-    /\ LET \* The maximum indexes for which a quorum agrees
-           agreeIndexes == {index \in 1..Len(log[i]) : Agree(i, index) \in Quorum}
-           \* New value for commitIndex'[i]
-           newCommitIndex ==
-              IF /\ agreeIndexes /= {}
-                 /\ log[i][Max(agreeIndexes)] = currentTerm[i]
-              THEN Max(agreeIndexes)
-              ELSE commitIndex[i]
-       IN 
-          /\ commitIndex[i] < newCommitIndex \* only enabled if it actually advances
-          /\ commitIndex' = [commitIndex EXCEPT ![i] = newCommitIndex]
-    /\ UNCHANGED <<msgs, serverVars, candidateVars, leaderVars, log, msgs>>
 
 \* ACTION: UpdateTerm
 \* Any RPC with a newer term causes the recipient to advance its term first.
@@ -201,6 +167,22 @@ RecordGrantedVote(i, m) ==
                                 IF (i = m.votedFor) THEN {m.from} ELSE {}]
     /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars, msgs>>
 
+\* Candidate i becomes a leader.
+BecomeLeader(i) ==
+    /\ state[i] = Candidate
+    /\ votesGranted[i] \in Quorum
+    /\ state'      = [state EXCEPT ![i] = Leader]
+    /\ nextIndex'  = [nextIndex EXCEPT ![i] = [j \in Server |-> Len(log[i]) + 1]]
+    /\ matchIndex' = [matchIndex EXCEPT ![i] = [j \in Server |-> 0]]
+    /\ UNCHANGED <<msgs, currentTerm, votedFor, candidateVars, logVars, msgs>>
+
+\* Leader i appends a new entry in its log.
+ClientRequest(i) ==
+    /\ state[i] = Leader
+    /\ log' = [log EXCEPT ![i] = Append(log[i], currentTerm[i])]
+    /\ msgs' = msgs \cup {UniversalMsg(i)}
+    /\ UNCHANGED <<serverVars, candidateVars,leaderVars, commitIndex>>
+
 \* Server i appends a new log entry from some other server.
 AppendEntry(i, m) ==
     /\ m.currentTerm = currentTerm[i]
@@ -233,6 +215,39 @@ TruncateEntry(i, m) ==
     \* There is no need to broadcast your state on this action.
     /\ UNCHANGED <<candidateVars, msgs, leaderVars, votedFor, currentTerm>>
 
+\* Server i learns that another server has applied an entry up to some point in its log.
+LeaderLearnsOfAppliedEntry(i, m) ==
+    /\ state[i] = Leader
+    \* Entry is applied in current term.
+    /\ m.currentTerm = currentTerm[i]
+    \* Only need to update if newer.
+    /\ Len(m.log) > matchIndex[i][m.from]
+    \* Follower must have a matching log entry.
+    /\ Len(m.log) \in DOMAIN log[i]
+    /\ m.log[Len(m.log)] = log[i][Len(m.log)]
+    \* Update matchIndex to highest index of their log.
+    /\ matchIndex' = [matchIndex EXCEPT ![i][m.from] = Len(m.log)]
+    /\ UNCHANGED <<serverVars, candidateVars, logVars, nextIndex, msgs>>
+
+\* The set of servers that agree up through index.
+Agree(i, index) == {i} \cup {k \in Server : matchIndex[i][k] >= index }
+
+\* Leader i advances its commitIndex.
+AdvanceCommitIndex(i) ==
+    /\ state[i] = Leader
+    /\ LET \* The maximum indexes for which a quorum agrees
+           agreeIndexes == {index \in 1..Len(log[i]) : Agree(i, index) \in Quorum}
+           \* New value for commitIndex'[i]
+           newCommitIndex ==
+              IF /\ agreeIndexes /= {}
+                 /\ log[i][Max(agreeIndexes)] = currentTerm[i]
+              THEN Max(agreeIndexes)
+              ELSE commitIndex[i]
+       IN 
+          /\ commitIndex[i] < newCommitIndex \* only enabled if it actually advances
+          /\ commitIndex' = [commitIndex EXCEPT ![i] = newCommitIndex]
+    /\ UNCHANGED <<msgs, serverVars, candidateVars, leaderVars, log, msgs>>
+
 \* 
 \* Server i learns of a new commitIndex from some other server.
 \* 
@@ -250,20 +265,6 @@ LearnCommit(i, m) ==
     /\ commitIndex' = [commitIndex EXCEPT ![i] = Min({m.commitIndex, Len(log[i])})]
     \* No need to send a response message since we are not updating our logs.
     /\ UNCHANGED <<candidateVars, msgs, leaderVars, log, votedFor, currentTerm, state, msgs>>
-
-\* Server i learns that another server has applied an entry up to some point in its log.
-LeaderLearnsOfAppliedEntry(i, m) ==
-    /\ state[i] = Leader
-    \* Entry is applied in current term.
-    /\ m.currentTerm = currentTerm[i]
-    \* Only need to update if newer.
-    /\ Len(m.log) > matchIndex[i][m.from]
-    \* Follower must have a matching log entry.
-    /\ Len(m.log) \in DOMAIN log[i]
-    /\ m.log[Len(m.log)] = log[i][Len(m.log)]
-    \* Update matchIndex to highest index of their log.
-    /\ matchIndex' = [matchIndex EXCEPT ![i][m.from] = Len(m.log)]
-    /\ UNCHANGED <<serverVars, candidateVars, logVars, nextIndex, msgs>>
 
 \* Defines how the variables may transition.
 Next == 
