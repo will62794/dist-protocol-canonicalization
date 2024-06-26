@@ -63,3 +63,14 @@ Can you kind of see distributed protocols in some way as simply carrying out a s
 And so, can't any node in the system, in theory, perform these distributed writes or reads as long as they do so correctly? For example, by default, leaders check the committment condition via a distributed read, and then tell others about it, but can't any node check this condition if they want to?
 
 The universal message passing style seems to make this clearer? Like, it doesn't seem to privilege any one node over another to do distributed reads of certain state.
+
+Message draft:
+
+> This has also made me think about whether there is then some kind of "maximal" or "weakest" variant of a protocol in the canonical model, in the sense that nodes  make maximal use of the information that they can read at any given time. If you even just assume a fixed set of state variables (unchanged from the original, non-canonicalized protocol), you could perhaps just consider looking at a/the logically weakest protocol that still satisfies the same underlying correctness properties.
+
+
+I was thinking today that it may be the case that at least certain "message specific" variants of a protocol could be shown as simple refinements of a canonicalized protocol.
+
+E.g. consider the `RequestVote` message flow in standard Raft, and consider `BecomeCandidate` and GrantVote in my canonical model. It seems that all that "Standard Raft" does is basically restrict the canonicalized message flow by (a) labeling the message broadcast in `BecomeCandidate` with a `RequestVote` "tag" and (b) adding restrictions on what type of message can be received in GrantVote and from what type of node (i.e. you only grant votes for candidates).
+
+But, this seems a strict strengthening of the canonical model (with possible auxiliary label state added onto a state message), so should imply a standard refinement. Basically, it seems like at least some class of "messaging patterns" could just be viewed as restrictions on the set of messages that are allowed to be received/processed at a node in the canonical model. But, the canonical model would always be more general (allowing more possible patterns of message reads), so more concrete protocols would refine the canonical model.
