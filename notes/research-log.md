@@ -52,3 +52,14 @@ Argument is that modeling and describing protocols with a pre-defined messaging/
 - This is then reflected in an update to `commitIndex`, which is then propagated to other nodes which learn about this distributed fact since it was recorded by the primary.
 - But, this privilege of learning about distributed states doesn't have to be limited to the primary always, right?
 - And, is it also possible that sometimes nodes learn of a distributed state, and then immediately send out a message which represents that they learned this distributed state, but without ever actually writing down the fact that they learned it explicitly? Is this a qualitatively different use of messages that should be accounted for in some protocols?
+
+Can you kind of see distributed protocols in some way as simply carrying out a series of "distributed writes" and "distributed reads"? e.g.
+
+- Election: a distributed write which sets `votedFor` and `currentTerm` on a quorum of nodes.
+- BecomeLeader: a distributed read that detects a quorum have voted for you in your term.
+- Committing an entry: a distributed write to get an entry present on a quorum in a certain term.
+- Advancing commit index: a distributed read that checks whether an entry is present on a quorum in a certain term.
+
+And so, can't any node in the system, in theory, perform these distributed writes or reads as long as they do so correctly? For example, by default, leaders check the committment condition via a distributed read, and then tell others about it, but can't any node check this condition if they want to?
+
+The universal message passing style seems to make this clearer? Like, it doesn't seem to privilege any one node over another to do distributed reads of certain state.
