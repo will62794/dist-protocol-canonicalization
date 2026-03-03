@@ -111,11 +111,11 @@ Init ==
 BroadcastUniversalMsg(s) == 
     msgs' = msgs \cup {[
         from |-> s,
-        currentTerm |-> currentTerm[s],
-        state |-> state[s],
-        votedFor |-> votedFor[s],
-        log |-> log[s],
-        commitIndex |-> commitIndex[s]
+        currentTerm |-> currentTerm'[s],
+        state |-> state'[s],
+        votedFor |-> votedFor'[s],
+        log |-> log'[s],
+        commitIndex |-> commitIndex'[s]
         \* votesGranted |-> votesGranted[s],
         \* nextIndex |-> nextIndex[s],
         \* matchIndex |-> matchIndex[s]    
@@ -136,27 +136,30 @@ BecomeCandidate(i) ==
     /\ currentTerm' = [currentTerm EXCEPT ![i] = currentTerm[i] + 1]
     /\ votedFor' = [votedFor EXCEPT ![i] = i] \* votes for itself
     /\ votesGranted'   = [votesGranted EXCEPT ![i] = {i}] \* votes for itself
-    /\ BroadcastUniversalMsg(i)
     /\ UNCHANGED <<leaderVars, logVars>>
+    /\ BroadcastUniversalMsg(i)
 
 \* Server i grants its vote to a candidate server.
 GrantVote(i, m) ==
-    /\ m.currentTerm <= currentTerm[i]
+    \* /\ m.currentTerm <= currentTerm[i]
     /\ LET  j     == m.from
             logOk == \/ LastTerm(m.log) > LastTerm(log[i])
                      \/ /\ LastTerm(m.log) = LastTerm(log[i])
                         /\ Len(m.log) >= Len(log[i])
-            grant == /\ m.currentTerm = currentTerm[i]
+            grant == /\ m.currentTerm >= currentTerm[i]
                      /\ logOk
                      /\ votedFor[i] \in {Nil, j} IN
-            /\ m.currentTerm <= currentTerm[i]
+            \* /\ m.currentTerm <= currentTerm[i]
             /\ votedFor' = [votedFor EXCEPT ![i] = IF grant THEN j ELSE votedFor[i]]
+            /\ currentTerm' = [currentTerm EXCEPT ![i] = m.currentTerm]
+            /\ UNCHANGED <<state, candidateVars, leaderVars, logVars>>
             /\ BroadcastUniversalMsg(i)
-            /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, logVars>>
+
 
 \* Server i records a vote that was granted for it in its current term.
 RecordGrantedVote(i, m) ==
     /\ m.currentTerm = currentTerm[i]
+    /\ state[i] = Candidate
     /\ votesGranted' = [votesGranted EXCEPT ![i] = 
                             \* The sender must have voted for us in this term.
                             votesGranted[i] \cup 
@@ -171,13 +174,14 @@ BecomeLeader(i) ==
     /\ nextIndex'  = [nextIndex EXCEPT ![i] = [j \in Server |-> Len(log[i]) + 1]]
     /\ matchIndex' = [matchIndex EXCEPT ![i] = [j \in Server |-> 0]]
     /\ UNCHANGED <<msgs, currentTerm, votedFor, candidateVars, logVars, msgs>>
+    /\ BroadcastUniversalMsg(i)
 
 \* Leader i appends a new entry in its log.
 ClientRequest(i) ==
     /\ state[i] = Leader
     /\ log' = [log EXCEPT ![i] = Append(log[i], currentTerm[i])]
-    /\ BroadcastUniversalMsg(i)
     /\ UNCHANGED <<serverVars, candidateVars,leaderVars, commitIndex>>
+    /\ BroadcastUniversalMsg(i)
 
 \* Server i appends a new log entry from some other server.
 AppendEntry(i, m) ==
@@ -189,9 +193,9 @@ AppendEntry(i, m) ==
     /\ Len(m.log) > Len(log[i])
     \* Only update logs in this action. Commit learning is done separately.
     /\ log' = [log EXCEPT ![i] = Append(log[i], m.log[Len(log[i]) + 1])]
-    /\ BroadcastUniversalMsg(i)
     /\ UNCHANGED <<candidateVars, commitIndex, leaderVars, votedFor, currentTerm, state>>
-       
+    /\ BroadcastUniversalMsg(i)
+
 \* Server i truncates its log based on detection of some other divergent log in a newer term.
 TruncateEntry(i, m) ==
     \* /\ m.currentTerm = currentTerm[m.mdest]
@@ -242,8 +246,8 @@ AdvanceCommitIndex(i) ==
        IN 
           /\ commitIndex[i] < newCommitIndex \* only enabled if it actually advances
           /\ commitIndex' = [commitIndex EXCEPT ![i] = newCommitIndex]
-          /\ BroadcastUniversalMsg(i)
     /\ UNCHANGED <<serverVars, candidateVars, leaderVars, log>>
+    /\ BroadcastUniversalMsg(i)
 
 \* 
 \* Server i learns of a new commitIndex from some other server.
@@ -346,528 +350,4 @@ LeaderLearnsOfAppliedEntryAction == \E i \in Server : \E m \in msgs : LeaderLear
 AdvanceCommitIndexAction == \E i \in Server : AdvanceCommitIndex(i)
 LearnCommitAction == \E i \in Server : \E m \in msgs : LearnCommit(i, m)
 
-\* RequestVoteRequestType == [
-\*     mtype         : {RequestVoteRequest},
-\*     mterm         : Terms,
-\*     mlastLogTerm  : Terms,
-\*     mlastLogIndex : LogIndicesWithZero,
-\*     msource       : Server,
-\*     mdest         : Server
-\* ]
-
-\* RequestVoteRequestTypeOp(T) == [
-\*     mtype         : {RequestVoteRequest},
-\*     mterm         : T,
-\*     mlastLogTerm  : Terms,
-\*     mlastLogIndex : LogIndicesWithZero,
-\*     msource       : Server,
-\*     mdest         : Server
-\* ]
-
-
-\* RequestVoteResponseType == [
-\*     mtype        : {RequestVoteResponse},
-\*     mterm        : Terms,
-\*     mvoteGranted : BOOLEAN,
-\*     msource      : Server,
-\*     mdest        : Server
-\* ]
-
-\* RequestVoteResponseTypeOp(T) == [
-\*     mtype        : {RequestVoteResponse},
-\*     mterm        : T,
-\*     mvoteGranted : BOOLEAN,
-\*     msource      : Server,
-\*     mdest        : Server
-\* ]
-
-\* AppendEntriesRequestType == [
-\*     mtype      : {AppendEntriesRequest},
-\*     mterm      : Terms,
-\*     mprevLogIndex  : LogIndices,
-\*     mprevLogTerm   : Terms,
-\*     mentries       : BoundedSeq(Terms, MaxMEntriesLen),
-\*     mcommitIndex   : LogIndicesWithZero,
-\*     msource        : Server,
-\*     mdest          : Server
-\* ]
-
-\* AppendEntriesResponseType == [
-\*     mtype        : {AppendEntriesResponse},
-\*     mterm        : Terms,
-\*     msuccess     : BOOLEAN,
-\*     mmatchIndex  : LogIndices,
-\*     msource      : Server,
-\*     mdest        : Server
-\* ]
-
-
-\* Set of all subsets of a set of size <= k.
-\* kOrSmallerSubset(k, S) == UNION {(kSubset(n, S)) : n \in 0..k}
-
-\* 
-\* Work around size limitations of TLC subset computations.
-\* 
-
-\* RequestVoteResponseTypeSampled == UNION { kOrSmallerSubset(2, RequestVoteResponseTypeOp({t})) : t \in Terms }
-\* RequestVoteRequestTypeSampled == UNION { kOrSmallerSubset(2, RequestVoteRequestTypeOp({t})) : t \in Terms }
-
-\* RequestVoteType == RandomSetOfSubsets(3, 3, RequestVoteRequestType) \cup RandomSetOfSubsets(3, 3, RequestVoteResponseType)  
-\* AppendEntriesType == RandomSetOfSubsets(3, 3, AppendEntriesRequestType) \cup RandomSetOfSubsets(3, 3, AppendEntriesResponseType)  
-
-\* TypeOK == 
-\*     /\ msgs \in RequestVoteType
-\*     /\ msgs \in AppendEntriesType
-\*     /\ currentTerm \in [Server -> Terms]
-\*     /\ state       \in [Server -> {Leader, Follower, Candidate}]
-\*     /\ votedFor    \in [Server -> ({Nil} \cup Server)]
-\*     /\ votesGranted \in [Server -> (SUBSET Server)]
-\*     /\ nextIndex  \in [Server -> [Server -> LogIndices]]
-\*     /\ matchIndex \in [Server -> [Server -> LogIndicesWithZero]]        
-\*     /\ log             \in [Server -> BoundedSeq(Terms, MaxLogLen)]
-\*     /\ commitIndex     \in [Server -> LogIndicesWithZero]
-\*     \* Encode these basic invariants into type-correctness.
-\*     /\ \A m \in msgs : m.msource # m.mdest
-\*     /\ \A m \in msgs : m.msource # m.mdest
-
-
-
------------------------
-
-
-\********************
-\* Various lemmas.
-\********************
-
-\* \* Is log entry e = <<index, term>> in the log of node 'i'.
-\* InLog(e, i) == \E x \in DOMAIN log[i] : x = e[1] /\ log[i][x] = e[2]
-
-\* INV: CommittedEntriesReachMajority
-\* There cannot be a committed entry that is not at majority quorum
-\* Don't use this invariant when allowing data loss on a server.
-\* CommittedEntriesReachMajority ==
-\*     IF \E i \in Server : state[i] = Leader /\ commitIndex[i] > 0
-\*     THEN \E i \in Server :
-\*            /\ state[i] = Leader
-\*            /\ commitIndex[i] > 0
-\*            /\ \E quorum \in SUBSET Server :
-\*                /\ Cardinality(quorum) = (Cardinality(Server) \div 2) + 1
-\*                /\ i \in quorum
-\*                /\ \A j \in quorum :
-\*                    /\ Len(log[j]) >= commitIndex[i]
-\*                    /\ log[j][commitIndex[i]] = log[i][commitIndex[i]]
-\*     ELSE TRUE
-
-\* H_QuorumsSafeAtTerms ==
-\*     \A s \in Server : (state[s] = Leader) => 
-\*         \E Q \in Quorum : 
-\*             \A t \in Q : 
-\*                 /\ currentTerm[t] >= currentTerm[s]
-\*                 /\ (currentTerm[t] = currentTerm[s]) => votedFor[t] # Nil
-
-\* \* If two nodes are in the same term, then their votes granted
-\* \* sets cannot have intersecting voters.
-\* H_CandidateVotesGrantedInTermAreUnique ==
-\*     \A s,t \in Server :
-\*         (/\ s # t
-\*          /\ state[s] = Candidate
-\*          /\ state[t] = Candidate
-\*          /\ currentTerm[s] = currentTerm[t]) =>
-\*             (votesGranted[s] \cap votesGranted[t]) = {}
-
-\* \* If a node has garnered votes in a term as candidate, there must
-\* \* be no other leader in that term in existence.
-\* H_CandidateWithVotesGrantedInTermImplyNoOtherLeader ==
-\*     \A s,t \in Server :
-\*         (/\ s # t
-\*          /\ state[s] = Candidate
-\*          /\ votesGranted[s] \in Quorum
-\*          /\ currentTerm[s] = currentTerm[t]) =>
-\*             state[t] # Leader
-
-\* \* Does there exist a quorum of RequestVote responses in term T
-\* \* that support voting for server 'dest'.
-\* ExistsRequestVoteResponseQuorum(T, dest) == 
-\*     \E ms \in SUBSET msgs : 
-\*         /\ \A m \in ms : m.mtype = RequestVoteResponse
-\*             /\ m.mterm = T
-\*             /\ m.mdest = dest
-\*             /\ m.mvoteGranted
-\*         \* Responses form a quorum.
-\*         /\ ({m.msource : m \in ms} \cup {dest}) \in Quorum
-
-\* \* If a successful quorum of request vote repsonses was sent in term T, then 
-\* \* there can be no logs that exist in term T.
-\* \* TODO: Fix this to get a correct statement here.
-\* H_SuccessfulRequestVoteQuorumInTermImpliesNoLogsInTerm ==
-\*     \A t \in Terms : 
-\*     \E dest \in Server : 
-\*         (/\ ExistsRequestVoteResponseQuorum(t, dest)
-\*          /\ (~\E l \in Server : state[l] = Leader /\ currentTerm[l] = t)) => 
-\*             \A s \in Server : \A ind \in DOMAIN log[s] : log[s][ind] # t
-
-\* H_CandidateWithVotesGrantedInTermImplyNoOtherLogsInTerm ==
-\*     \A s,t \in Server :
-\*         (state[s] = Candidate /\ votesGranted[s] \in Quorum) =>
-\*             ~(\E i \in DOMAIN log[t] : log[t][i] = currentTerm[s])
-
-\* H_RequestVoteQuorumInTermImpliesNoOtherLogsOrLeadersInTerm == 
-\*     \A s \in Server :
-\*         (/\ state[s] = Candidate
-\*          /\ ExistsRequestVoteResponseQuorum(currentTerm[s], s)) =>
-\*             /\ \A n \in Server : \A ind \in DOMAIN log[n] : log[n][ind] # currentTerm[s]
-\*             /\ \A n \in Server : ~(state[n] = Leader /\ currentTerm[n] = currentTerm[s])
-
-\* H_RequestVoteQuorumInTermImpliesNoAppendEntryLogsInTerm == 
-\*     \A s \in Server :
-\*         (/\ state[s] = Candidate
-\*          /\ ExistsRequestVoteResponseQuorum(currentTerm[s], s)) =>
-\*             ~(\E m \in msgs :   
-\*                 /\ m.mtype = AppendEntriesRequest
-\*                 /\ m.mentries # <<>>
-\*                 /\ m.mentries[1] = currentTerm[s])
-
-\* H_CandidateWithVotesGrantedInTermImplyNoAppendEntryLogsInTerm ==
-\*     \A s \in Server :
-\*         (state[s] = Candidate /\ votesGranted[s] \in Quorum) =>
-\*         ~(\E m \in msgs :   
-\*             /\ m.mtype = AppendEntriesRequest
-\*             /\ m.mentries # <<>>
-\*             /\ m.mentries[1] = currentTerm[s])
-
-
-\* \* If request vote response message has been sent in term T,
-\* \* then the sender must be at least in term T.
-\* H_RequestVoteResponseTermsMatchSource ==
-\*     \A m \in msgs :
-\*         m.mtype = RequestVoteResponse => 
-\*             /\ currentTerm[m.msource] >= m.mterm
-\*             /\ (m.mvoteGranted /\ (currentTerm[m.msource] = m.mterm)) => votedFor[m.msource] = m.mdest
-
-
-\* \* If a candidate C has garnered a set of granted votes in term T, 
-\* \* then all of those voters must be at term T or newer, and if they
-\* \* are in term T, then they must have voted for C.
-\* H_CandidateWithVotesGrantedInTermImplyVotersSafeAtTerm ==
-\*     \A s \in Server : 
-\*         (state[s] = Candidate) =>
-\*             \A v \in votesGranted[s] : 
-\*                 /\ currentTerm[v] >= currentTerm[s]
-\*                 /\ currentTerm[v] = currentTerm[s] => votedFor[v] # Nil
-
-\* \* H_CandidateWithVotesGrantedInTermImplyVotedForSafeAtTerm ==
-\* \*     \A s \in Server : 
-\* \*         (state[s] = Candidate /\ votesGranted[s] \in Quorum) =>
-\* \*             \A v \in votesGranted[s] : 
-\* \*                 /\ currentTerm[v] = currentTerm[s] => votedFor[v] # Nil
-
-\* \* If a server exists in voteGranted for some server in term T, and the node is still in
-\* \* term T, then it must have voted for that node.
-\* H_VoteInGrantedImpliesVotedFor == 
-\*     \A s,t \in Server :
-\*         (/\ state[s] = Candidate
-\*          /\ t \in votesGranted[s]) => 
-\*             /\ currentTerm[t] >= currentTerm[s]
-\*             /\ currentTerm[t] = currentTerm[s] => votedFor[t] = s
-
-
-\* \* If a server has granted its vote to a server S in term T, then
-\* \* there can't be a vote response message from that server to some other server R # S.
-\* H_VoteGrantedImpliesVoteResponseMsgConsistent ==
-\*     \A s,t \in Server : 
-\*         ( /\ state[s] = Candidate 
-\*           /\ t \in votesGranted[s]) =>
-\*             ~\E m \in msgs :
-\*                 /\ m.mtype = RequestVoteResponse
-\*                 /\ m.mterm = currentTerm[s]
-\*                 /\ m.msource = t
-\*                 /\ m.mdest # s
-\*                 /\ m.mvoteGranted
-
-\* H_VotesCantBeGrantedTwiceToCandidatesInSameTerm ==
-\*     \A s,t \in Server : 
-\*         ( /\ s # t 
-\*           /\ state[s] = Candidate 
-\*           /\ state[t] = Candidate
-\*           /\ currentTerm[s] = currentTerm[t]) =>
-\*             \* Cannot be intersection between voters that gave votes to candidates in same term.
-\*             votesGranted[s] \cap votesGranted[t] = {}
-
-\* \* H_VotesCantBeGrantedTwiceToCandidatesInSameTerm == 
-\* \*     \A s,t \in Server : 
-\* \*         \* If s voted for t.
-\* \*         (votedFor[s] = t)
-
-\* H_CurrentTermAtLeastAsLargeAsLogTerms == 
-\*     \A s \in Server : 
-\*         (\A i \in DOMAIN log[s] : currentTerm[s] >= log[s][i])
-
-\* \* A server's current term is always at least as large as the terms in its log.
-\* H_CurrentTermAtLeastAsLargeAsLogTermsForPrimary == 
-\*     \A s \in Server : 
-\*         (state[s] = Leader) => 
-\*             (\A i \in DOMAIN log[s] : currentTerm[s] >= log[s][i])
-
-\* H_LogTermsMonotonic == 
-\*     \A s \in Server : \A i,j \in DOMAIN log[s] : (i <= j) => (log[s][i] <= log[s][j])
-
-\* H_LogTermsMonotonicAppendEntries == 
-\*     \A s \in Server : \A i,j \in DOMAIN log[s] : (i <= j) => (log[s][i] <= log[s][j])
-
-\* \* If a log entry exists in term T and there is a primary in term T, then this
-\* \* log entry should be present in that primary's log.
-\* H_PrimaryHasEntriesItCreated == 
-\*     \A i,j \in Server :
-\*     (state[i] = Leader) => 
-\*     \* Can't be that another node has an entry in this primary's term
-\*     \* but the primary doesn't have it.
-\*         ~(\E k \in DOMAIN log[j] :
-\*             /\ log[j][k] = currentTerm[i]
-\*             /\ ~InLog(<<k,log[j][k]>>, i))
-
-\* \* If an AppendEntries request has been sent with some log entries in term T, then a current
-\* \* leader in term T must have these log entries.
-\* H_PrimaryHasEntriesItCreatedAppendEntries == 
-\*     \A s \in Server :
-\*     \A m \in msgs :
-\*         (/\ m.mtype = AppendEntriesRequest
-\*          /\ m.mentries # <<>> 
-\*          /\ m.mentries[1] = currentTerm[s]
-\*          /\ state[s] = Leader) =>
-\*             /\ (m.mprevLogIndex + 1) \in DOMAIN log[s]
-\*             /\ log[s][m.mprevLogIndex + 1] = m.mentries[1]
-
-\* \* Existence of an entry in term T implies a past election in T, so 
-\* \* there must be some quorum at this term or greater.
-\* H_LogEntryInTermImpliesSafeAtTerm == 
-\*     \A s \in Server : 
-\*     \A i \in DOMAIN log[s] :
-\*         \E Q \in Quorum : \A n \in Q : 
-\*             /\ currentTerm[n] >= log[s][i]
-\*             /\ currentTerm[n] = log[s][i] => (votedFor[n] # Nil)
-
-
-\* \* If an AppendEntries request was sent in term T, then there must have been a successful 
-\* \* election in term T.
-\* H_AppendEntriesRequestInTermImpliesSafeAtTerms == 
-\*     \A m \in msgs : 
-\*         m.mtype = AppendEntriesRequest =>
-\*             \E Q \in Quorum : \A t \in Q : currentTerm[t] >= m.mterm
-
-\* H_LogEntryInTermImpliesSafeAtTermAppendEntries ==
-\*     \A m \in msgs : 
-\*         (/\ m.mtype = AppendEntriesRequest
-\*          /\ m.mentries # <<>>) =>
-\*             \E Q \in Quorum : \A n \in Q : 
-\*                 /\ currentTerm[n] >= m.mentries[1]
-\*                 /\ currentTerm[n] = m.mentries[1] => (votedFor[n] # Nil)
-
-
-\* \* <<index, term>> pairs uniquely identify log prefixes.
-\* H_LogMatching == 
-\*     \A s,t \in Server : 
-\*     \A i \in DOMAIN log[s] :
-\*         (\E j \in DOMAIN log[t] : i = j /\ log[s][i] = log[t][j]) => 
-\*         (SubSeq(log[s],1,i) = SubSeq(log[t],1,i)) \* prefixes must be the same.
-
-\* H_LogMatchingInmsgs ==
-\*     \* If a server contains the log entry being sent in this AppendEntries, 
-\*     \* then the server's previous entry must match the AppendEntries previous entry.
-\*     \A m \in msgs : 
-\*     \A s \in Server : 
-\*         (\E ind \in DOMAIN log[s] : 
-\*             /\ m.mtype = AppendEntriesRequest
-\*             /\ m.mentries # <<>>
-\*             /\ ind = m.mprevLogIndex + 1 
-\*             /\ log[s][ind] = m.mentries[1]
-\*             /\ m.mprevLogIndex \in DOMAIN log[s]) =>
-\*                 log[s][m.mprevLogIndex] = m.mprevLogTerm
-
-\* \* Has a candidate server garnered all votes to win election in its term.
-\* CandidateWithVoteQuorumGranted(s) == 
-\*     /\ state[s] = Candidate
-\*     /\ votesGranted[s] \in Quorum
-
-\* H_DivergentEntriesInmsgsForRequestVoteQuorum ==
-\*     \A m \in msgs : 
-\*     \A s \in Server : 
-\*         (/\ m.mtype = AppendEntriesRequest
-\*          /\ ExistsRequestVoteResponseQuorum(currentTerm[s], s)
-\*          /\ m.mprevLogIndex + 1 > Len(log[s])) => 
-\*             (m.mentries # <<>> => m.mentries[1] # currentTerm[s]) 
-
-\* H_DivergentEntriesInmsgs == 
-\*     \* An AppendEntries cannot contain log entries in term T at newer indices than
-\*     \* a leader or pending candidate's log in term T.
-\*     \A m \in msgs : 
-\*     \A s \in Server : 
-\*         (/\ m.mtype = AppendEntriesRequest
-\*          /\ (state[s] = Leader \/ CandidateWithVoteQuorumGranted(s))
-\*          /\ m.mprevLogIndex + 1 > Len(log[s])) => 
-\*             (m.mentries # <<>> => m.mentries[1] # currentTerm[s]) 
-
-\* \* If a leader server has a match index recorded, the remote node's log
-\* \* must match its own log up to this index.
-
-\* H_RequestVotesNeverSentToSelf == 
-\*     \A m \in msgs : m.msource # m.mdest
-
-\* H_AppendEntriesNeverSentToSelf == 
-\*     \A m \in msgs : m.msource # m.mdest
-
-\* H_AppendEntriesCommitIndexCannotBeLargerThanTheSender == 
-\*     \A m \in msgs :
-\*         m.mtype = AppendEntriesRequest => 
-\*         m.mcommitIndex <= commitIndex[m.msource] 
-
-\* \* Match index records for a leader must always be <= its own log length.
-\* H_LeaderMatchIndexBound == 
-\*     \A s \in Server : (state[s] = Leader) => 
-\*         \A t \in Server : matchIndex[s][t] <= Len(log[s])
-
-\* ExistsNodeQuorumThatVotedAtTermFor(T, s) == 
-\*     \E Q \in Quorum :
-\*     \A t \in Q :
-\*         /\ votedFor[t] = s
-\*         /\ currentTerm[t] = T
-
-\* H_NodesVotedInQuorumInTermImpliesNoAppendEntriesRequestsInTerm == 
-\*     \A s \in Server :
-\*         (/\ state[s] = Candidate
-\*          /\ ExistsNodeQuorumThatVotedAtTermFor(currentTerm[s], s)) =>
-\*             ~(\E m \in msgs : 
-\*                 /\ m.mtype = AppendEntriesRequest
-\*                 /\ m.mterm = currentTerm[s])
-
-
-\* H_RequestVoteQuorumInTermImpliesNoAppendEntriesRequestsInTerm == 
-\*     \A s \in Server :
-\*         (/\ state[s] = Candidate
-\*          /\ ExistsRequestVoteResponseQuorum(currentTerm[s], s)) =>
-\*             ~(\E m \in msgs : 
-\*                 /\ m.mtype = AppendEntriesRequest
-\*                 /\ m.mterm = currentTerm[s])
-
-\* \* If a server candidate has won votes in term T, there can't be
-\* \* any AppendEntries messages already sent in that term.
-\* H_CandidateWithVotesGrantedImpliesNoAppendEntriesRequestsInTerm == 
-\*       \A s \in Server :
-\*         (/\ state[s] = Candidate
-\*          /\ votesGranted[s] \in Quorum) =>
-\*             ~\E m \in msgs : 
-\*                 /\ m.mtype = AppendEntriesRequest
-\*                 /\ m.mterm = currentTerm[s]
-
-\* \* The logs in any AppendEntries message sent in term T must be present
-\* \* in the logs of a leader in term T.
-\* H_AppendEntriesRequestLogEntriesMustBeInLeaderLog == 
-\*     \A m \in msgs : 
-\*         (/\ m.mtype = AppendEntriesRequest
-\*          /\ m.mentries # <<>>
-\*          /\ state[m.msource] = Leader
-\*          /\ m.mprevLogIndex > 0
-\*          /\ currentTerm[m.msource] = m.mterm) =>
-\*             /\ Len(log[m.msource]) >= m.mprevLogIndex + 1
-\*             /\ log[m.msource][m.mprevLogIndex + 1] = m.mentries[1]
-\*             /\ log[m.msource][m.mprevLogIndex] = m.mprevLogTerm
-
-
-\* \* If a AppendEntries response has been sent in term T recording a match up to
-\* \* index I, then the sender node should have the same entry as the leader.
-\* H_LeaderMatchIndexValidAppendEntries == 
-\*     \A m \in msgs : 
-\*         (/\ m.mtype = AppendEntriesResponse
-\*          /\ m.msuccess
-\*          /\ m.mmatchIndex > 0
-\*          /\ state[m.mdest] = Leader
-\*          /\ m.mterm = currentTerm[m.mdest]) =>
-\*             /\ Len(log[m.msource]) >= m.mmatchIndex
-\*             /\ Len(log[m.mdest]) >= m.mmatchIndex
-\*             /\ log[m.msource][m.mmatchIndex] = log[m.mdest][m.mmatchIndex]
-
-\* \* If matchIndex on a leader has quorum agreement on an index, then this entry must
-\* \* be present on a quorum of servers.
-\* H_LeaderMatchIndexValid == 
-\*     \A s \in Server :
-\*     \A ind \in DOMAIN log[s] :
-\*     \E Q \in Quorum : 
-\*     \A t \in Q :
-\*         (/\ state[s] = Leader 
-\*          /\ Agree(s, ind) \in Quorum ) => 
-\*             /\ ind \in DOMAIN log[t]
-\*             /\ log[t][ind] = log[s][ind]
-
-\* H_CommitIndexCoversEntryImpliesExistsOnQuorum == 
-\*     \A s \in Server :
-\*         (commitIndex[s] > 0) => 
-\*             \E Q \in Quorum :
-\*             \A t \in Q :
-\*                 /\ Len(log[s]) >= commitIndex[s] 
-\*                 /\ Len(log[t]) >= commitIndex[s] 
-\*                 /\ log[t][commitIndex[s]] = log[s][commitIndex[s]]
-
-\* \* If a commit index covers a log entry in some term,
-\* \* then no primary in an earlier term can be enabled to commit any entries
-\* \* in its own log.
-\* H_CommitIndexAtEntryInTermDisabledEarlierCommits == 
-\*     \A s,t \in Server :
-\*         (/\ s # t 
-\*          /\ commitIndex[s] > 0
-\*          /\ state[t] = Leader
-\*          /\ currentTerm[t] < log[s][commitIndex[s]]) =>
-\*                 \A ind \in DOMAIN log[t] : Agree(t, ind) \notin Quorum 
-
-
-\* \* If an AppendEntries has been sent with a commitIndex that covers some 
-\* \* log entry in the message, there must be some node that has that entry 
-\* \* and equal or newer commitIndex.
-\* H_CommitIndexInAppendEntriesImpliesCommittedEntryExists == 
-\*     \A m \in msgs : 
-\*         ( /\ m.mtype = AppendEntriesRequest 
-\*           /\ m.mcommitIndex > 0
-\*           /\ m.mentries # <<>> 
-\*           /\ m.mprevLogIndex > 0) =>
-\*             (\E n \in Server :
-\*              \E ind \in DOMAIN log[n] :
-\*                 (/\ ind = m.mprevLogIndex
-\*                  /\ log[n][ind] = m.mprevLogTerm
-\*                  /\ commitIndex[n] >= m.mcommitIndex))
-
-
-\* H_LogEntryInTermDisablesEarlierCommits == 
-\*     \A s,t \in Server :
-\*     \A si \in DOMAIN log[s] :
-\*         (/\ s # t 
-\*          /\ state[t] = Leader
-\*          /\ currentTerm[t] < log[s][si]) =>
-\*                 \A ind \in DOMAIN log[t] : (Agree(t, ind) > commitIndex[t]) => Agree(t, ind) \notin Quorum 
-
-\*             \* \A t \in Q : Len(log[t]) >= commitIndex[s] /\ log[t][commitIndex[s]] = log[s][commitIndex[s]]
-
-\* \* Commit index is no greater than the log length on any node.
-\* H_CommitIndexBoundValid == 
-\*     \A s \in Server : commitIndex[s] <= Len(log[s])
-
-
-\* INV: Used in debugging
-TestInv ==
-    \* ~\E s,t \in Server : state[s] = Leader /\ state[s] = Candidate /\ Len(log[t]) > 0 /\ currentTerm[s] = currentTerm[t]
-    \* \A s \in Server : state[s] = Candidate => Len(log[s]) = 0
-    \* ~\E s,t \in Server : s # t /\ commitIndex[s] > 0 /\ commitIndex[t] > 0
-    \* /\ ~\E msgs \in SUBSET msgs : msgs # {}
-    \* /\ ~(\E msgs \in (SUBSET msgs) : 
-    \*         /\ PrintT(SUBSET msgs)
-    \*         /\ msgs # {} 
-    \*         /\ (\A m \in msgs : m.mtype = RequestVoteResponse))
-    \* /\ PrintT({s \in Server : ExistsRequestVoteResponseQuorum(1, s)})
-    \* \A n \in Server : 
-    \* \A t \in Terms : 
-    \*     ~ExistsRequestVoteResponseQuorum(t, n)
-
-
-    \* ~\E m \in msgs : (m.mtype = RequestVoteResponse /\ m.mvoteGranted)
-    \* ~\E s \in Server : Cardinality(votesGranted[s]) > 1
-    \* /\ ~\E s,t \in Server : s # t /\ log[s] # <<>> /\ log[t] # <<>>
-    [][~LearnCommitAction]_vars
-    \* ~\E s \in Server : state[s] = Leader
 ===============================================================================
