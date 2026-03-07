@@ -141,7 +141,8 @@ BecomeCandidate(i) ==
 
 \* Server i grants its vote to a candidate server.
 GrantVote(i, m) ==
-    \* /\ m.currentTerm <= currentTerm[i]
+    /\ m.currentTerm >= currentTerm[i]
+    /\ state[i] = Follower
     /\ LET  j     == m.from
             logOk == \/ LastTerm(m.log) > LastTerm(log[i])
                      \/ /\ LastTerm(m.log) = LastTerm(log[i])
@@ -149,7 +150,6 @@ GrantVote(i, m) ==
             grant == /\ m.currentTerm >= currentTerm[i]
                      /\ logOk
                      /\ votedFor[i] \in {Nil, j} IN
-            \* /\ m.currentTerm <= currentTerm[i]
             /\ votedFor' = [votedFor EXCEPT ![i] = IF grant THEN j ELSE votedFor[i]]
             /\ currentTerm' = [currentTerm EXCEPT ![i] = m.currentTerm]
             /\ UNCHANGED <<state, candidateVars, leaderVars, logVars>>
@@ -162,31 +162,33 @@ RecordGrantedVote(i, m) ==
     /\ state[i] = Candidate
     /\ votesGranted' = [votesGranted EXCEPT ![i] = 
                             \* The sender must have voted for us in this term.
-                            votesGranted[i] \cup 
-                                IF (i = m.votedFor) THEN {m.from} ELSE {}]
+                            votesGranted[i] \cup IF (i = m.votedFor) THEN {m.from} ELSE {}]
     /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars, msgs>>
 
-\* Candidate i becomes a leader.
-BecomeLeader(i) ==
+\* Candidate i becomes a leader with quorum Q.
+BecomeLeader(i, Q) ==
     /\ state[i] = Candidate
-    /\ votesGranted[i] \in Quorum
+    \* Concretized precondition.
+    \* /\ votesGranted[i] \in Quorum
+    \* History query precondition.
+    /\ \A j \in Q : \E m \in msgs : m.currentTerm = currentTerm[i] /\ m.from = j /\ m.votedFor = i
     /\ state'      = [state EXCEPT ![i] = Leader]
     /\ nextIndex'  = [nextIndex EXCEPT ![i] = [j \in Server |-> Len(log[i]) + 1]]
     /\ matchIndex' = [matchIndex EXCEPT ![i] = [j \in Server |-> 0]]
-    /\ UNCHANGED <<msgs, currentTerm, votedFor, candidateVars, logVars, msgs>>
+    /\ UNCHANGED <<currentTerm, votedFor, candidateVars, logVars>>
     /\ BroadcastUniversalMsg(i)
 
 \* Leader i appends a new entry in its log.
 ClientRequest(i) ==
     /\ state[i] = Leader
     /\ log' = [log EXCEPT ![i] = Append(log[i], currentTerm[i])]
-    /\ UNCHANGED <<serverVars, candidateVars,leaderVars, commitIndex>>
+    /\ UNCHANGED <<serverVars, candidateVars, leaderVars, commitIndex>>
     /\ BroadcastUniversalMsg(i)
 
 \* Server i appends a new log entry from some other server.
 AppendEntry(i, m) ==
     /\ m.currentTerm = currentTerm[i]
-    /\ state[i] \in { Follower, Candidate } \* is this precondition necessary?
+    /\ state[i] \in { Follower } \* is this precondition necessary?
     \* Can always append an entry if we are a prefix of the other log, and will only
     \* append if other log actually has more entries than us.
     /\ IsPrefix(log[i], m.log)
@@ -232,20 +234,28 @@ LeaderLearnsOfAppliedEntry(i, m) ==
 \* The set of servers that agree up through index.
 Agree(i, index) == {i} \cup {k \in Server : matchIndex[i][k] >= index }
 
-\* Leader i advances its commitIndex.
-AdvanceCommitIndex(i) ==
+\* Leader i advances its commitIndex using quorum Q.
+AdvanceCommitIndex(i, Q, newCommitIndex) ==
     /\ state[i] = Leader
-    /\ LET \* The maximum indexes for which a quorum agrees
-           agreeIndexes == {index \in 1..Len(log[i]) : Agree(i, index) \in Quorum}
-           \* New value for commitIndex'[i]
-           newCommitIndex ==
-              IF /\ agreeIndexes /= {}
-                 /\ log[i][Max(agreeIndexes)] = currentTerm[i]
-              THEN Max(agreeIndexes)
-              ELSE commitIndex[i]
-       IN 
-          /\ commitIndex[i] < newCommitIndex \* only enabled if it actually advances
-          /\ commitIndex' = [commitIndex EXCEPT ![i] = newCommitIndex]
+    /\ newCommitIndex > commitIndex[i]
+    \* Concretized precondition.
+    \* /\ LET \* The maximum indexes for which a quorum agrees
+    \*     agreeIndexes == {index \in 1..Len(log[i]) : Agree(i, index) \in Quorum}
+    \*     \* New value for commitIndex'[i]
+    \*     newCommitIndex ==
+    \*         IF /\ agreeIndexes /= {}
+    \*             /\ log[i][Max(agreeIndexes)] = currentTerm[i]
+    \*         THEN Max(agreeIndexes)
+    \*         ELSE commitIndex[i]
+    \* IN 
+    \*     /\ commitIndex[i] < newCommitIndex \* only enabled if it actually advances
+    \* History query precondition.
+    /\ \A j \in Q : \E m \in msgs : 
+        /\ m.from = j 
+        /\ Len(m.log) >= newCommitIndex
+        /\ log[i][newCommitIndex] = m.log[newCommitIndex]
+        /\ m.currentTerm = currentTerm[i]
+    /\ commitIndex' = [commitIndex EXCEPT ![i] = newCommitIndex]
     /\ UNCHANGED <<serverVars, candidateVars, leaderVars, log>>
     /\ BroadcastUniversalMsg(i)
 
@@ -269,17 +279,21 @@ LearnCommit(i, m) ==
 
 \* Defines how the variables may transition.
 Next == 
-    \/ \E i \in Server : \E m \in msgs : UpdateTerm(i, m)
     \/ \E i \in Server : BecomeCandidate(i)
     \/ \E i \in Server : \E m \in msgs : GrantVote(i, m)
-    \/ \E i \in Server : \E m \in msgs : RecordGrantedVote(i, m)
-    \/ \E i \in Server : BecomeLeader(i)
+    \/ \E i \in Server, Q \in Quorum : BecomeLeader(i, Q)
     \/ \E i \in Server : ClientRequest(i)
     \/ \E i \in Server : \E m \in msgs : AppendEntry(i, m)
     \/ \E i \in Server : \E m \in msgs : TruncateEntry(i, m)
-    \/ \E i \in Server : \E m \in msgs : LeaderLearnsOfAppliedEntry(i, m)
-    \/ \E i \in Server : AdvanceCommitIndex(i)
+    \/ \E i \in Server, Q \in Quorum : \E newCommitIndex \in 1..Len(log[i]) : AdvanceCommitIndex(i, Q, newCommitIndex)
     \/ \E i \in Server : \E m \in msgs : LearnCommit(i, m)
+    \/ \E i \in Server : \E m \in msgs : UpdateTerm(i, m)
+    \* 
+    \* Internal actions that become redundant with history query specification.
+    \* 
+    \/ \E i \in Server : \E m \in msgs : RecordGrantedVote(i, m)
+    \/ \E i \in Server : \E m \in msgs : LeaderLearnsOfAppliedEntry(i, m)
+
 
 Spec == Init /\ [][Next]_vars
 
