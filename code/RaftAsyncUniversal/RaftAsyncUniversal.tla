@@ -151,7 +151,7 @@ GrantVote(i, m) ==
                      /\ logOk
                      /\ votedFor[i] \in {Nil, j} IN
             /\ votedFor' = [votedFor EXCEPT ![i] = IF grant THEN j ELSE votedFor[i]]
-            /\ currentTerm' = [currentTerm EXCEPT ![i] = m.currentTerm]
+            /\ currentTerm' = [currentTerm EXCEPT ![i] = IF grant THEN m.currentTerm ELSE currentTerm[i]]
             /\ UNCHANGED <<state, candidateVars, leaderVars, logVars>>
             /\ BroadcastUniversalMsg(i)
 
