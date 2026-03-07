@@ -1,7 +1,7 @@
 --------------------------------- MODULE RaftAsyncUniversal ---------------------------------
 
 \* 
-\* Asynchronous specification of Raft, in a "universal" message passing style.
+\* Asynchronous specification of Raft, in a "canonicalized" message passing style.
 \* 
 \* Some original spec sources: 
 \* https://github.com/ongardie/raft.tla
@@ -340,6 +340,7 @@ LogIndicesWithZero == 0..MaxLogLen
 StateConstraint == 
     /\ \A s \in Server : currentTerm[s] <= MaxTerm
     /\ \A s \in Server : Len(log[s]) <= MaxLogLen
+    \* /\ Cardinality(msgs) < 12
 
 Symmetry == Permutations(Server)
 
@@ -352,16 +353,16 @@ BoundedSeq(S, n) == SeqOf(S, n)
 
 NextUnchanged == UNCHANGED vars
 
-UpdateTermAction == \E i \in Server : \E m \in msgs : UpdateTerm(i, m)
-BecomeCandidateAction == \E i \in Server : BecomeCandidate(i)
-GrantVoteAction == \E i \in Server : \E m \in msgs : GrantVote(i, m)
-RecordGrantedVoteAction == \E i \in Server : \E m \in msgs : RecordGrantedVote(i, m)
-BecomeLeaderAction == \E i \in Server : BecomeLeader(i)
-ClientRequestAction == \E i \in Server : ClientRequest(i)
-AppendEntryAction == \E i \in Server : \E m \in msgs : AppendEntry(i, m)
-TruncateEntryAction == \E i \in Server : \E m \in msgs : TruncateEntry(i, m)
-LeaderLearnsOfAppliedEntryAction == \E i \in Server : \E m \in msgs : LeaderLearnsOfAppliedEntry(i, m)
-AdvanceCommitIndexAction == \E i \in Server : AdvanceCommitIndex(i)
-LearnCommitAction == \E i \in Server : \E m \in msgs : LearnCommit(i, m)
+\* UpdateTermAction == \E i \in Server : \E m \in msgs : UpdateTerm(i, m)
+\* BecomeCandidateAction == \E i \in Server : BecomeCandidate(i)
+\* GrantVoteAction == \E i \in Server : \E m \in msgs : GrantVote(i, m)
+\* RecordGrantedVoteAction == \E i \in Server : \E m \in msgs : RecordGrantedVote(i, m)
+\* BecomeLeaderAction == \E i \in Server : BecomeLeader(i)
+\* ClientRequestAction == \E i \in Server : ClientRequest(i)
+\* AppendEntryAction == \E i \in Server : \E m \in msgs : AppendEntry(i, m)
+\* TruncateEntryAction == \E i \in Server : \E m \in msgs : TruncateEntry(i, m)
+\* LeaderLearnsOfAppliedEntryAction == \E i \in Server : \E m \in msgs : LeaderLearnsOfAppliedEntry(i, m)
+\* \* AdvanceCommitIndexAction == \E i \in Server : AdvanceCommitIndex(i)
+\* LearnCommitAction == \E i \in Server : \E m \in msgs : LearnCommit(i, m)
 
 ===============================================================================
