@@ -180,7 +180,8 @@ BecomeLeader(i, Q) ==
 
 \* Leader i appends a new entry in its log.
 ClientRequest(i) ==
-    /\ state[i] = Leader
+    \* /\ state[i] = Leader
+    /\ \E Q \in Quorum : \A j \in Q : \E m \in msgs : m.currentTerm = currentTerm[i] /\ m.from = j /\ m.votedFor = i
     /\ log' = [log EXCEPT ![i] = Append(log[i], currentTerm[i])]
     /\ UNCHANGED <<serverVars, candidateVars, leaderVars, commitIndex>>
     /\ BroadcastUniversalMsg(i)
@@ -201,7 +202,9 @@ AppendEntry(i, m) ==
 \* Server i truncates its log based on detection of some other divergent log in a newer term.
 TruncateEntry(i, m) ==
     \* /\ m.currentTerm = currentTerm[m.mdest]
-    /\ state[i] \in { Follower, Candidate }
+    \* /\ state[i] \in { Follower, Candidate }
+    \* I am not currently acting as leader of a term.
+    /\ ~(\E Q \in Quorum : \A j \in Q : \E mx \in msgs : mx.currentTerm = currentTerm[i] /\ mx.from = j /\ mx.votedFor = i)
     \* Neither log is a prefix of the other.
     /\ ~IsPrefix(m.log, log[i])
     /\ ~IsPrefix(log[i], m.log)
@@ -236,7 +239,8 @@ Agree(i, index) == {i} \cup {k \in Server : matchIndex[i][k] >= index }
 
 \* Leader i advances its commitIndex using quorum Q.
 AdvanceCommitIndex(i, Q, newCommitIndex) ==
-    /\ state[i] = Leader
+    \* /\ state[i] = Leader
+    /\ \E LQ \in Quorum : \A j \in LQ : \E m \in msgs : m.currentTerm = currentTerm[i] /\ m.from = j /\ m.votedFor = i
     /\ newCommitIndex > commitIndex[i]
     \* Concretized precondition.
     \* /\ LET \* The maximum indexes for which a quorum agrees
