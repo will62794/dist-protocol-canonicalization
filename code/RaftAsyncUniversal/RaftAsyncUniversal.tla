@@ -291,8 +291,8 @@ Next ==
     \* 
     \* Internal actions that become redundant with history query specification.
     \* 
-    \/ \E i \in Server : \E m \in msgs : RecordGrantedVote(i, m)
-    \/ \E i \in Server : \E m \in msgs : LeaderLearnsOfAppliedEntry(i, m)
+    \* \/ \E i \in Server : \E m \in msgs : RecordGrantedVote(i, m)
+    \* \/ \E i \in Server : \E m \in msgs : LeaderLearnsOfAppliedEntry(i, m)
 
 
 Spec == Init /\ [][Next]_vars
