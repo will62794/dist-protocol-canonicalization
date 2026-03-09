@@ -111,8 +111,6 @@ UpdateTerm(i, m) ==
 
 \* Server increments its term and becomes a candidate for election.
 BecomeCandidate(i) ==
-    \* /\ state[i] \in {Follower, Candidate}
-    \* /\ state' = [state EXCEPT ![i] = Candidate]
     /\ currentTerm' = [currentTerm EXCEPT ![i] = currentTerm[i] + 1]
     /\ votedFor' = [votedFor EXCEPT ![i] = i] \* votes for itself
     /\ votesGranted'   = [votesGranted EXCEPT ![i] = {i}] \* votes for itself
@@ -122,7 +120,6 @@ BecomeCandidate(i) ==
 \* Server i grants its vote to a candidate server.
 GrantVote(i, m) ==
     /\ m.currentTerm >= currentTerm[i]
-    \* /\ state[i] = Follower
     /\ LET  j     == m.from
             logOk == \/ LastTerm(m.log) > LastTerm(log[i])
                      \/ /\ LastTerm(m.log) = LastTerm(log[i])
@@ -137,7 +134,7 @@ GrantVote(i, m) ==
 
 \* Leader i appends a new entry in its log.
 ClientRequest(i) ==
-    \* /\ state[i] = Leader
+    \* I am leader (history query).
     /\ \E Q \in Quorum : \A j \in Q : \E m \in msgs : m.currentTerm = currentTerm[i] /\ m.from = j /\ m.votedFor = i
     /\ log' = [log EXCEPT ![i] = Append(log[i], currentTerm[i])]
     /\ UNCHANGED <<serverVars, candidateVars, leaderVars, commitIndex>>
@@ -155,9 +152,6 @@ AppendEntry(i, m) ==
     /\ log' = [log EXCEPT ![i] = Append(log[i], m.log[Len(log[i]) + 1])]
     /\ UNCHANGED <<candidateVars, commitIndex, leaderVars, votedFor, currentTerm, state>>
     /\ BroadcastUniversalMsg(i)
-
-\* The set of servers that agree up through index.
-\* Agree(i, index) == {i} \cup {k \in Server : matchIndex[i][k] >= index }
 
 \* Leader i advances its commitIndex using quorum Q.
 AdvanceCommitIndex(i, Q, newCommitIndex) ==
@@ -192,14 +186,14 @@ TruncateEntry(i, m) ==
 \* 
 \* Server i learns of a new commitIndex from some other server.
 \* 
-\* The requirement is that the server it learned from is on the same branch of
-\* history, which is checked \* via the log prefix check.
+\* The server it learned from must be on the same branch of
+\* history, which is checked via the log prefix check.
 \* 
 LearnCommit(i, m) ==
     /\ m.currentTerm = currentTerm[i]
     /\ state[i] \in { Follower, Candidate }
-    \* We can learn a commitIndex as long as our log is on the same history branch as the log of
-    \* the node we are learning commitIndex from.
+    \* We can learn a commitIndex as long as our log is on the same history
+    \* branch as the log of the node we are learning commitIndex from.
     /\ IsPrefix(log[i], m.log)
     /\ m.commitIndex > commitIndex[i] \* no need to ever decrement our commitIndex.
     \* Update commit index, without advancing to a point beyond the end of our log. 
