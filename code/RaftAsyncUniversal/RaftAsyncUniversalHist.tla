@@ -176,24 +176,18 @@ AdvanceCommitIndex(i, Q, newCommitIndex) ==
 
 \* Server i truncates its log based on detection of some other divergent log in a newer term.
 TruncateEntry(i, m) ==
-    \* /\ m.currentTerm = currentTerm[m.mdest]
-    \* /\ state[i] \in { Follower, Candidate }
     \* I am not currently acting as leader of a term (history query).
     /\ ~(\E Q \in Quorum : \A j \in Q : \E mx \in msgs : mx.currentTerm = currentTerm[i] /\ mx.from = j /\ mx.votedFor = i)
     \* Neither log is a prefix of the other.
-    /\ ~IsPrefix(m.log, log[i])
-    /\ ~IsPrefix(log[i], m.log)
+    /\ ~IsPrefix(m.log, log[i]) /\ ~IsPrefix(log[i], m.log)
     \* Can't truncate an empty log.
     /\ Len(log[i]) > 0
     \* Their log term is newer than yours.
     /\ LastTerm(m.log) > LastTerm(log[i])
-    /\ state' = [state EXCEPT ![i] = Follower]
+    /\ state' = state \* [state EXCEPT ![i] = Follower]
     /\ log' = [log EXCEPT ![i] = SubSeq(log[i], 1, Len(log[i])-1)]
-    \* If we do roll back an entry, adjust our commit index accordingly so it
-    \* doesn't point to something past the end of our new log. (TODO: is this safe?)
-    /\ commitIndex' = [commitIndex EXCEPT ![i] = Min({commitIndex[i], Len(log[i])-1})]
     \* There is no need to broadcast your state on this action.
-    /\ UNCHANGED <<candidateVars, msgs, leaderVars, votedFor, currentTerm>>
+    /\ UNCHANGED <<candidateVars, msgs, leaderVars, votedFor, currentTerm, commitIndex>>
 
 \* 
 \* Server i learns of a new commitIndex from some other server.

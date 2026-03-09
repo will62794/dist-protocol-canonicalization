@@ -285,12 +285,12 @@ LearnCommit(i, m) ==
 Next == 
     \/ \E i \in Server : BecomeCandidate(i)
     \/ \E i \in Server : \E m \in msgs : GrantVote(i, m)
-    \/ \E i \in Server, Q \in Quorum : BecomeLeader(i, Q)
+    \* \/ \E i \in Server, Q \in Quorum : BecomeLeader(i, Q)
     \/ \E i \in Server : ClientRequest(i)
     \/ \E i \in Server : \E m \in msgs : AppendEntry(i, m)
     \/ \E i \in Server : \E m \in msgs : TruncateEntry(i, m)
     \/ \E i \in Server, Q \in Quorum : \E newCommitIndex \in 1..Len(log[i]) : AdvanceCommitIndex(i, Q, newCommitIndex)
-    \/ \E i \in Server : \E m \in msgs : LearnCommit(i, m)
+    \* \/ \E i \in Server : \E m \in msgs : LearnCommit(i, m)
     \/ \E i \in Server : \E m \in msgs : UpdateTerm(i, m)
     \* 
     \* Internal actions that become redundant with history query specification.
